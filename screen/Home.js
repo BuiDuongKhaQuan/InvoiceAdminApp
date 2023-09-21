@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, FlatList } from 'react-native';
+import { StyleSheet, Text, View, FlatList, Image } from 'react-native';
 import React, { useState } from 'react';
 import { MaterialCommunityIcons, FontAwesome5, AntDesign, Entypo } from '@expo/vector-icons';
 import { backgroundColor } from '../constant/color';
@@ -34,6 +34,8 @@ export default function Home() {
             icon: <MaterialCommunityIcons name="calendar-month" size={24} color="black" />,
         },
     ]);
+    const imageUrl =
+        'https://www.google.com/url?sa=i&url=https%3A%2F%2Fmeeyland.com%2Fdau-tu%2Fhuong-dan-cach-ve-bieu-do-duong-trong-excel-nhanh-chong%2F&psig=AOvVaw3quS0hbMzKcu7k_8UZ0u_2&ust=1695388239055000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCOiU3cDju4EDFQAAAAAdAAAAABAE'; // Thay đổi đường dẫn tới hình ảnh của bạn
 
     return (
         <View style={styles.container}>
@@ -80,7 +82,14 @@ export default function Home() {
                         />
                     </View>
                 </View>
-                <View style={styles.container_center2}></View>
+                <View style={styles.container_center2}>
+                    <Image
+                        source={{
+                            uri: 'https://news.meeycdn.net/zoom/480x0/uploads/images/2022/08/26/cach-ve-bieu-do-line-trong-excel-1-1661526357.jpg',
+                        }}
+                        style={{ width: '100%', height: 300 }}
+                    />
+                </View>
             </View>
         </View>
     );
@@ -179,5 +188,16 @@ const styles = StyleSheet.create({
         color: 'black',
         // textAlign: 'center',
         // alignItems: 'center',
+    },
+    container_center2: {
+        // flex: 1,
+        height: 1000000,
+        marginTop: 20,
+        // backgroundColor: 'red',
+    },
+    avatar: {
+        backgroundColor: 'red',
+        // height: '100%',
+        // width: 'auto',
     },
 });
