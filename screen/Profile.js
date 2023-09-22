@@ -149,7 +149,5 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 10,
         borderWidth: 1,
-        // borderColor: white,
-        // backgroundColor: buttonColor,
     },
 });
