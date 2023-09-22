@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View, Image, TextInput } from 'react-native';
 import React from 'react';
 import Button from '../components/Button';
-import { MaterialCommunityIcons, Feather, AntDesign, MaterialIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, Feather, AntDesign, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import Input from '../components/Input';
 
-export default function Profile() {
+export default function Profile({ navigation }) {
     return (
         <View style={styles.container}>
             <View style={styles.container_top}>
@@ -35,7 +35,7 @@ export default function Profile() {
                     holder="Nhập tên"
                     customStylesContainer={styles.input}
                     customStylesInput={styles.input1}
-                    iconLeft={require('../assets/icons/account.png')}
+                    iconLeft={<MaterialCommunityIcons name="account" size={24} color="black" />}
                 />
                 <Text style={styles.name}>Email</Text>
                 <Input
@@ -43,7 +43,7 @@ export default function Profile() {
                     holder="Nhập email"
                     customStylesContainer={styles.input}
                     customStylesInput={styles.input1}
-                    iconLeft={require('../assets/icons/email.png')}
+                    iconLeft={<MaterialIcons name="email" size={24} color="black" />}
                 />
                 <Text style={styles.name}>Password</Text>
                 <Input
@@ -51,9 +51,11 @@ export default function Profile() {
                     holder="Nhập password"
                     customStylesContainer={styles.input}
                     customStylesInput={styles.input1}
-                    iconLeft={require('../assets/icons/key.png')}
-                    iconRight={require('../assets/icons/right-arrow.png')}
-                    customStylesIcon={{ marginLeft: 10, marginHorizontal: -2 }}
+                    iconLeft={
+                        <MaterialCommunityIcons name="key-variant" size={24} color="black" style={{ left: 20 }} />
+                    }
+                    iconRight={<FontAwesome5 name="chevron-right" size={24} color="black" />}
+                    customStylesIcon={{}}
                 />
             </View>
             <View style={styles.container_bottom}>
@@ -149,7 +151,5 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 10,
         borderWidth: 1,
-        // borderColor: white,
-        // backgroundColor: buttonColor,
     },
 });

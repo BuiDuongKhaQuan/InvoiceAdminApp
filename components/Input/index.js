@@ -17,7 +17,6 @@ export default function Input({
     customStylesInput,
     customStylesContainer,
     customStylesTextValidate,
-    customStylesIcon,
     ...props
 }) {
     const isPass = pass ? true : false;
@@ -29,12 +28,11 @@ export default function Input({
     const combinedSltyesInput = StyleSheet.flatten([styles.input_text, customStylesInput]);
 
     const combinedSltyesTextValidate = StyleSheet.flatten([styles.text_validate, customStylesTextValidate]);
-    const combinedSltyesIcon = StyleSheet.flatten([styles.input_icon, customStylesIcon]);
 
     return (
         <View style={combinedSltyesContainer}>
-            <View style={styles.container}>
-                {iconLeft && <Image style={combinedSltyesIcon} source={iconLeft} />}
+            <View style={btnSend ? { ...styles.container } : { ...styles.container, justifyContent: 'center' }}>
+                {iconLeft && <View style={styles.input_icon}>{iconLeft}</View>}
                 <TextInput
                     {...props}
                     onChangeText={onChangeText}
@@ -46,12 +44,12 @@ export default function Input({
                     <Button
                         text="Gửi"
                         customStylesText={{ fontSize: 20 }}
-                        customStylesBtn={{ width: 75, height: 35, marginHorizontal: -80, marginVertical: 11 }}
+                        customStylesBtn={{ width: 70, height: 35, marginLeft: -70, marginVertical: 12 }}
                     />
                 )}
                 {iconRight && (
-                    <TouchableOpacity onPress={onPressIconRight}>
-                        <Image style={combinedSltyesIcon} source={iconRight} />
+                    <TouchableOpacity style={styles.input_icon} onPress={onPressIconRight}>
+                        {iconRight}
                     </TouchableOpacity>
                 )}
             </View>
