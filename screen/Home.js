@@ -40,9 +40,9 @@ export default function Home() {
     return (
         <View style={styles.container}>
             <View style={styles.container_top}>
-                <View style={styles.container_top_btn}>
+                {/* <View style={styles.container_top_btn}>
                     <Entypo name="menu" size={38} color="black" />
-                </View>
+                </View> */}
                 <View style={styles.container_top_statistic}>
                     <FlatList
                         data={item}
@@ -103,12 +103,9 @@ const styles = StyleSheet.create({
     },
     container_top: {
         flex: 1.2,
-        marginTop: 40,
     },
-    container_top_btn: {},
     container_center: {
         flex: 2,
-        // backgroundColor: '',
         marginHorizontal: 10,
     },
     container_top_statistic: {
