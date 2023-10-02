@@ -3,7 +3,8 @@ import React from 'react';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import Input from '../components/Input';
 import Button from '../components/Button';
-export default function EditCustomer() {
+
+export default function EditInvoice() {
     return (
         <View style={styles.container}>
             <View style={styles.edit}>
@@ -18,17 +19,33 @@ export default function EditCustomer() {
                 </View>
             </View>
             <View style={styles.productname}>
-                <Text style={styles.product}>First and last name</Text>
+                <Text style={styles.product}>Customer</Text>
                 <Input
-                    validateText="Vui lòng nhập họ và tên"
+                    validateText="Vui lòng nhập tên của khách hàng"
                     customStylesContainer={styles.input}
                     customStylesInput={styles.input1}
                 />
             </View>
             <View style={styles.productname}>
-                <Text style={styles.product}>Email</Text>
+                <Text style={styles.product}>Address</Text>
                 <Input
-                    validateText="Vui lòng nhập địa chỉ email"
+                    validateText="Vui lòng nhập địa chỉ"
+                    customStylesContainer={styles.input}
+                    customStylesInput={styles.input1}
+                />
+            </View>
+            <View style={styles.productname}>
+                <Text style={styles.product}>Phone Number</Text>
+                <Input
+                    validateText="Vui lòng nhập số điện thoại"
+                    customStylesContainer={styles.input}
+                    customStylesInput={styles.input1}
+                />
+            </View>
+            <View style={styles.productname}>
+                <Text style={styles.product}>Total amount</Text>
+                <Input
+                    validateText="Vui lòng nhập tổng tiền"
                     customStylesContainer={styles.input}
                     customStylesInput={styles.input1}
                 />

@@ -4,29 +4,38 @@ import { createDrawerNavigator, DrawerItemList } from '@react-navigation/drawer'
 import { MaterialCommunityIcons, Entypo, FontAwesome5, AntDesign, MaterialIcons } from '@expo/vector-icons';
 import Home from './Home';
 import Profile from './Profile';
+import { useUserContext } from './UserContext';
+import Bill from './Bill';
+import Customer from './Customer';
+import Company from './Company';
+import Products from './Products';
+
 export default function DrawerNavigation() {
     const Drawer = createDrawerNavigator();
+    const { state } = useUserContext();
     return (
         <Drawer.Navigator
             drawerContent={(props) => {
                 return (
                     <SafeAreaView>
-                        <View
-                            style={{
-                                height: 200,
-                                width: '100%',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                borderBottomColor: '#ccc',
-                                borderBottomWidth: 1,
-                                backgroundColor: '#ccc',
-                            }}
-                        >
+                        <View style={styles.container}>
                             <Image
-                                source={require('../assets/icons/account.png')}
-                                style={{ width: 90, height: 90, borderRadius: 65 }}
+                                style={styles.wallpaper}
+                                source={
+                                    state.user.wallpaper == null
+                                        ? require('../assets/images/default-wallpaper.png')
+                                        : { uri: state.user.wallpaper }
+                                }
                             />
-                            <Text>Name</Text>
+                            <Image
+                                source={
+                                    state.user.image == null
+                                        ? require('../assets/images/default-avatar.png')
+                                        : { uri: state.user.image }
+                                }
+                                style={styles.avartar}
+                            />
+                            <Text style={styles.name}>{state.user.name}</Text>
                         </View>
                         <DrawerItemList {...props} />
                     </SafeAreaView>
@@ -53,7 +62,7 @@ export default function DrawerNavigation() {
             />
             <Drawer.Screen
                 name="Product Management"
-                component={Profile}
+                component={Products}
                 options={{
                     drawerLabel: 'Product Management',
                     title: 'Product Management',
@@ -61,17 +70,17 @@ export default function DrawerNavigation() {
                 }}
             />
             <Drawer.Screen
-                name="Ivoice Management"
-                component={Profile}
+                name="Invoice Management"
+                component={Bill}
                 options={{
-                    drawerLabel: 'Ivoice Management',
-                    title: 'Ivoice Management',
+                    drawerLabel: 'Invoice Management',
+                    title: 'Invoice Management',
                     drawerIcon: () => <FontAwesome5 name="file-invoice" size={24} color="black" />,
                 }}
             />
             <Drawer.Screen
                 name="Customer Management"
-                component={Profile}
+                component={Customer}
                 options={{
                     drawerLabel: 'Customer Management',
                     title: 'Customer Management',
@@ -80,7 +89,7 @@ export default function DrawerNavigation() {
             />
             <Drawer.Screen
                 name="Business Management"
-                component={Profile}
+                component={Company}
                 options={{
                     drawerLabel: 'Business Management',
                     title: 'Business Management',
@@ -99,4 +108,34 @@ export default function DrawerNavigation() {
         </Drawer.Navigator>
     );
 }
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+    container: {
+        height: 200,
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderBottomColor: '#ccc',
+        borderBottomWidth: 1,
+        backgroundColor: '#ccc',
+    },
+    wallpaper: {
+        resizeMode: 'stretch',
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
+    },
+    avartar: {
+        width: 90,
+        height: 90,
+        borderRadius: 65,
+        borderWidth: 1,
+        borderColor: 'gray',
+    },
+    name: {
+        color: 'white',
+        fontWeight: 'bold',
+        backgroundColor: 'rgba(0,0,0,0.2)',
+        padding: 5,
+        borderRadius: 5,
+    },
+});

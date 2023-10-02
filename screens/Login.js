@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, Image, Keyboard, Alert } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Input from '../components/Input';
 import Button from '../components/Button';
@@ -6,7 +6,9 @@ import { isValidateEmail, isValidatePass } from '../utilies/validate';
 import { fontSizeDefault } from '../constant/fontSize';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import BackgroundImage from '../layouts/DefaultLayout/BackgroundImage';
-// import { login } from '../Service/api';
+import { getCompaniesById, login } from '../Service/api';
+import { useUserContext } from './UserContext'; // Đảm bảo thay đổi đường dẫn đúng
+import Loading from '../components/Loading';
 
 export default function Login({ navigation }) {
     const [keyboardIsShow, setKeyboardIsShow] = useState(false);
@@ -14,6 +16,8 @@ export default function Login({ navigation }) {
     const [pass, setPass] = useState('');
     const [errorEmail, setErrorEmail] = useState(false);
     const [errorPass, setErrorPass] = useState(false);
+    const { dispatch } = useUserContext();
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         Keyboard.addListener('keyboardDidShow', () => {
@@ -34,11 +38,36 @@ export default function Login({ navigation }) {
         if (!isValidateLogin()) {
             return;
         } else {
-            // handleLogin();
-            navigation.navigate('Drawer');
+            handleLogin();
         }
     };
-    // const handleLogin = () => login(email, pass);
+
+    const handleLogin = async () => {
+        setLoading(true);
+        try {
+            const userData = await login(email, pass);
+            if (userData.roles == 'ROLE_ADMIN') {
+                dispatch({
+                    type: 'SIGN_IN',
+                    payload: userData,
+                });
+                navigation.navigate('Drawer');
+            } else {
+                Alert.alert('Login error!', 'You do not have access!!!');
+            }
+        } catch (error) {
+            if (error.response && error.response.status === 400) {
+                Alert.alert('Login error!', error.response.data.message);
+            } else if (error.response && error.response.status === 404) {
+                Alert.alert('Login error!', error.response.data.message);
+            } else {
+                Alert.alert('Login error', 'Transmission error, please try again later!!');
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleChangeEmail = (text) => {
         setErrorEmail(!isValidateEmail(text));
         setEmail(text);
@@ -52,6 +81,7 @@ export default function Login({ navigation }) {
     return (
         <View style={styles.container}>
             <BackgroundImage>
+                <Loading loading={loading} />
                 <View style={styles.container_top}>
                     <Image style={styles.logo} source={require('../assets/images/logo.png')} />
                     <Text style={styles.title}>Invoice C</Text>
@@ -69,18 +99,21 @@ export default function Login({ navigation }) {
                         onChangeText={handleChangePass}
                         value={pass}
                         validate={errorPass}
-                        validateText="Mật khẩu phải đủ 4 ký tự"
+                        validateText="Mật khẩu phải đủ 6 đến 8 ký tự"
                         pass
                         holder="Password"
                         iconLeft={<Ionicons name="lock-closed-outline" size={24} color="black" />}
                     />
 
-                    {keyboardIsShow || (
-                        <>
-                            <Button onPress={handlePress} text="Login" />
-                        </>
-                    )}
+                    {keyboardIsShow || <Button onPress={handlePress} text="Login" />}
                 </View>
+                {keyboardIsShow || (
+                    <View style={styles.container_botom}>
+                        <Text onPress={() => navigation.navigate('ForgotPassword')} style={styles.forgot}>
+                            Forgot Password?
+                        </Text>
+                    </View>
+                )}
             </BackgroundImage>
         </View>
     );
@@ -133,5 +166,6 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         fontSize: fontSizeDefault,
         color: '#26B819',
+        fontWeight: 'bold',
     },
 });

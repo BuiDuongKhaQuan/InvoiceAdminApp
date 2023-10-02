@@ -7,9 +7,10 @@ export const styles = StyleSheet.create({
         width: '90%',
         alignContent: 'center',
         backgroundColor: white,
+        justifyContent: 'center',
         marginHorizontal: 10,
         marginVertical: 7,
-        borderRadius: 15,
+        borderRadius: 10,
         shadowColor: 'black',
         shadowOffset: { width: 0, height: 2 }, // Điều chỉnh vị trí bóng (đối với iOS)
         shadowOpacity: 0.5, // Điều chỉnh độ trong suốt của bóng (đối với iOS)
@@ -27,9 +28,11 @@ export const styles = StyleSheet.create({
         marginHorizontal: 14,
     },
     input_text: {
-        width: 290,
+        flex: 1,
+        height: '100%',
         fontSize: fontSizeDefault,
         marginVertical: 15,
+        marginHorizontal: 10,
     },
     text_validate: {
         marginLeft: 50,
