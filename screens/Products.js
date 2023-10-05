@@ -1,11 +1,11 @@
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import Button from '../components/Button';
-import Input from '../components/Input';
-import { AntDesign, Feather, Ionicons, MaterialCommunityIcons, Foundation } from '@expo/vector-icons';
+import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
+import { AntDesign, Feather, Ionicons, Foundation } from '@expo/vector-icons';
 import { Row, Rows, Table, TableWrapper } from 'react-native-reanimated-table';
 import { getAllProduct, getProductByName } from '../Service/api';
 import { exportExcel } from '../utilies/export';
+import Button from '../components/Button';
+import Input from '../components/Input';
 import Popup from '../components/Popup/product';
 
 export default function Company() {
@@ -13,26 +13,33 @@ export default function Company() {
     const [visible, setVisible] = useState(false);
     const [products, setProducts] = useState([]);
     const [nameSearch, setNamSearch] = useState('');
+    const [loadig, setLoading] = useState(false);
 
     useEffect(() => {
         const products = async () => {
+            setLoading(true);
             try {
                 const data = await getAllProduct();
                 setProducts(data);
             } catch (error) {
                 console.log(error);
+            } finally {
+                setLoading(false);
             }
         };
         products();
     }, []);
     const handleExportExcel = async () => await exportExcel(products, 'Product');
     const handleSearch = async () => {
+        setLoading(true);
         try {
             const response = await getProductByName(nameSearch);
             const data = response;
             setProducts(data);
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoading(false);
         }
     };
     const ActionButton = ({ data }) => (
@@ -52,7 +59,7 @@ export default function Company() {
             product.id,
             product.name,
             product.price,
-            product.companyName,
+            product.nameCompany,
             <ActionButton data={product} />,
         ]);
 
@@ -81,57 +88,11 @@ export default function Company() {
                 <View style={styles.container_top}>
                     <View style={styles.btns}>
                         <Button
-                            text="Create new product"
-                            iconLeft={<AntDesign name="plus" size={17} color="black" />}
-                            customStylesBtn={{ ...styles.btn, flex: 1.4, backgroundColor: '#59f759' }}
-                            customStylesText={styles.btnText}
-                            customStylesIcon={styles.icon_btn}
-                        />
-                        <Button
-                            text="Delete history"
-                            iconLeft={<Feather name="delete" size={17} color="black" />}
-                            customStylesBtn={{ ...styles.btn, flex: 1.1, backgroundColor: 'red' }}
-                            customStylesText={styles.btnText}
-                            customStylesIcon={styles.icon_btn}
-                        />
-                        <Button
-                            text="Edit"
-                            iconLeft={<Feather name="edit-2" size={17} color="black" />}
-                            customStylesBtn={{ ...styles.btn, flex: 0.5, backgroundColo7r: '#FD767E' }}
-                            customStylesText={styles.btnText}
-                            customStylesIcon={styles.icon_btn}
-                        />
-                    </View>
-                    <View style={styles.btns}>
-                        <Button
                             text="Export Excel"
                             onPress={handleExportExcel}
                             iconLeft={<AntDesign name="export" size={17} color="black" />}
-                            customStylesBtn={{ ...styles.btn, backgroundColor: '#00ffed' }}
-                            customStylesText={styles.btnText}
-                            customStylesIcon={styles.icon_btn}
-                        />
-                        <Button
-                            text="Export PDF"
-                            iconLeft={<MaterialCommunityIcons name="export" size={17} color="black" />}
-                            customStylesBtn={{ ...styles.btn, backgroundColor: '#04c904' }}
-                            customStylesText={styles.btnText}
-                            customStylesIcon={styles.icon_btn}
-                        />
-                        <Button
-                            text="Download"
-                            iconLeft={<AntDesign name="download" size={17} color="black" />}
-                            customStylesBtn={{ ...styles.btn, backgroundColor: 'yellow' }}
-                            customStylesText={styles.btnText}
-                            customStylesIcon={styles.icon_btn}
-                        />
-                    </View>
-                    <View style={styles.btns}>
-                        <Button
-                            text="Print"
-                            iconLeft={<AntDesign name="printer" size={17} color="black" />}
                             customStylesBtn={{
-                                width: '20%',
+                                width: '30%',
                                 height: '100%',
                                 marginVertical: 5,
                                 backgroundColor: '#00ffed',

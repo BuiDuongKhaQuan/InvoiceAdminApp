@@ -32,7 +32,6 @@ export const styles = StyleSheet.create({
         height: '100%',
         fontSize: fontSizeDefault,
         marginVertical: 15,
-        marginHorizontal: 10,
     },
     text_validate: {
         marginLeft: 50,

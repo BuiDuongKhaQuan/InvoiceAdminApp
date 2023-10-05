@@ -2,15 +2,7 @@ import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-nati
 import React, { useEffect, useState } from 'react';
 import Button from '../components/Button';
 import Input from '../components/Input';
-import {
-    AntDesign,
-    Feather,
-    Ionicons,
-    MaterialCommunityIcons,
-    Foundation,
-    Entypo,
-    FontAwesome5,
-} from '@expo/vector-icons';
+import { AntDesign, Feather, Ionicons, Foundation, Entypo, FontAwesome5 } from '@expo/vector-icons';
 import { Row, Rows, Table, TableWrapper } from 'react-native-reanimated-table';
 import { getAllUser, getUserByEmail, getUserByStatus } from '../Service/api';
 import { exportExcel } from '../utilies/export';
@@ -24,8 +16,7 @@ export default function Company() {
     const [visible, setVisible] = useState(false);
     const [customers, setCustomers] = useState([]);
     const [emailSearch, setEmailSearch] = useState('');
-    const [status, setStatus] = useState();
-    const type = ['Not activated', 'Active', 'Delete', 'Lockup'];
+    const type = ['Not activated', 'Active', 'Delete', 'Lockup', 'All'];
     useEffect(() => {
         const customers = async () => {
             setLoading(true);
@@ -50,13 +41,22 @@ export default function Company() {
             console.log(error);
         }
     };
-    const handleFilter = async () => {
+    const handleFilter = async (status) => {
+        setLoading(true);
         try {
-            const response = await getUserByStatus(status);
-            const data = response;
-            setCustomers(data);
+            if (status === 4) {
+                const response = await getAllUser();
+                const data = response;
+                setCustomers(data);
+            } else {
+                const response = await getUserByStatus(status);
+                const data = response;
+                setCustomers(data);
+            }
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoading(false);
         }
     };
     const handleExportExcel = async () => await exportExcel(customers, 'Customer');
@@ -146,9 +146,7 @@ export default function Company() {
                             <SelectDropdown
                                 data={type}
                                 onSelect={(selectedItem, index) => {
-                                    console.log(index);
-                                    setStatus(index);
-                                    handleFilter();
+                                    handleFilter(index);
                                 }}
                                 buttonStyle={styles.dropdown_btn}
                                 defaultButtonText={'Selected'}

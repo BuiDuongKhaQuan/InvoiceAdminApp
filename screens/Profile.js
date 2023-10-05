@@ -7,12 +7,12 @@ import { useUserContext } from './UserContext';
 import * as ImagePicker from 'expo-image-picker';
 import Loading from '../components/Loading';
 import axios from 'axios';
+import { white } from '../constant/color';
 
 export default function Profile({ navigation }) {
     const { state, dispatch } = useUserContext();
     const [loading, setLoading] = useState(false);
     const [name, setName] = useState(state.user.name);
-    const [pass, setPass] = useState(state.user.name);
 
     const takePhotoAndUpload = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -114,41 +114,47 @@ export default function Profile({ navigation }) {
                             />
                         </TouchableOpacity>
 
-                        <Text style={styles.name}>{name}</Text>
+                        <Text style={{ ...styles.name, textAlign: 'center' }}>{name}</Text>
                     </View>
                 </View>
             </View>
             <View style={styles.container_center}>
-                <Text style={styles.name}>Name</Text>
-                <Input
-                    validateText="Vui lòng nhập đúng định dạng email"
-                    holder="Enter name?"
-                    value={name}
-                    onChangeText={(text) => setName(text)}
-                    customStylesContainer={styles.input}
-                    customStylesInput={styles.input1}
-                    iconLeft={<MaterialCommunityIcons name="account" size={24} color="black" />}
-                />
-                <Text style={styles.name}>Email</Text>
-                <Input
-                    editable={false}
-                    holder={state.user.email}
-                    customStylesContainer={styles.input}
-                    customStylesInput={styles.input1}
-                    iconLeft={<MaterialIcons name="email" size={24} color="black" />}
-                />
-                <Text style={styles.name}>Password</Text>
-                <Input
-                    holder="Nhập password"
-                    customStylesContainer={styles.input}
-                    customStylesInput={styles.input1}
-                    iconLeft={<MaterialCommunityIcons name="key-variant" size={24} color="black" />}
-                    iconRight={<FontAwesome5 name="chevron-right" size={24} color="black" />}
-                    customStylesIcon={{}}
-                />
+                <View style={styles.input_center}>
+                    <Text style={styles.name}>Name</Text>
+                    <Input
+                        validateText="Vui lòng nhập đúng định dạng email"
+                        holder="Enter name?"
+                        value={name}
+                        onChangeText={(text) => setName(text)}
+                        customStylesContainer={styles.input}
+                        customStylesInput={styles.input1}
+                        iconLeft={<MaterialCommunityIcons name="account" size={24} color="black" />}
+                    />
+                </View>
+                <View style={styles.input_center}>
+                    <Text style={styles.name}>Email</Text>
+                    <Input
+                        editable={false}
+                        holder={state.user.email}
+                        customStylesContainer={styles.input}
+                        customStylesInput={styles.input1}
+                        iconLeft={<MaterialIcons name="email" size={24} color="black" />}
+                    />
+                </View>
+                <View style={styles.input_center}>
+                    <Text style={styles.name}>Password</Text>
+                    <Button
+                        text="Change password"
+                        onPress={() => navigation.navigate('ChangePassword')}
+                        customStylesBtn={{ ...styles.btn, backgroundColor: white, borderWidth: 0 }}
+                        customStylesText={{ ...styles.text_btn, color: 'gray', fontSize: 15 }}
+                        iconLeft={<MaterialCommunityIcons name="key-variant" size={24} color="black" />}
+                        iconRight={<FontAwesome5 name="chevron-right" size={24} color="black" />}
+                    />
+                </View>
             </View>
             <View style={styles.container_bottom}>
-                <Button text="Lưu" customStylesBtn={styles.btn} onPress={handlerSend} />
+                <Button text="Save" customStylesBtn={styles.btn} onPress={handlerSend} />
             </View>
         </View>
     );
@@ -197,7 +203,6 @@ const styles = StyleSheet.create({
     },
     container_center: {
         flex: 3,
-        flexDirection: 'column',
         marginHorizontal: 10,
         marginVertical: 10,
         marginTop: 40,
@@ -209,27 +214,20 @@ const styles = StyleSheet.create({
     name: {
         marginHorizontal: 10,
         color: '#806969',
+        width: '100%',
     },
     input: {
         flexDirection: 'column',
-        width: 345,
+        width: '100%',
         height: 50,
-        justifyContent: 'center',
-        backgroundColor: 'white',
-        marginHorizontal: 10,
-        marginVertical: 10,
-        borderRadius: 5,
-        borderColor: 'white',
-        shadowColor: 'white',
-        borderWidth: 1,
-        shadowOffset: { width: 0, height: 2 }, // Điều chỉnh vị trí bóng (đối với iOS)
-        shadowOpacity: 0.5, // Điều chỉnh độ trong suốt của bóng (đối với iOS)
-        shadowRadius: 5, // Điều chỉnh bán kính của bóng (đối với iOS)
-        elevation: 5,
-        fontSize: 12,
+        elevation: 0,
     },
     input1: {
         fontSize: 15,
+    },
+    input_center: {
+        width: '100%',
+        alignItems: 'center',
     },
     container_bottom: {
         marginVertical: 10,
@@ -238,10 +236,8 @@ const styles = StyleSheet.create({
         marginTop: 40,
     },
     btn: {
-        width: 345,
+        width: '100%',
         height: 50,
-        justifyContent: 'center',
-        borderRadius: 10,
-        borderWidth: 1,
+        borderRadius: 5,
     },
 });

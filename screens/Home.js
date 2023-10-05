@@ -1,21 +1,23 @@
 import { StyleSheet, Text, View, FlatList, Image } from 'react-native';
-import React, { useState } from 'react';
-import { MaterialCommunityIcons, FontAwesome5, AntDesign, Entypo } from '@expo/vector-icons';
-import { backgroundColor } from '../constant/color';
+import React, { useEffect, useState } from 'react';
+import { MaterialCommunityIcons, FontAwesome5, AntDesign } from '@expo/vector-icons';
 import Button from '../components/Button';
+import { getAllCompanies, getAllInvoice, getAllProduct, getAllUser } from '../Service/api';
 export default function Home() {
+    const [account, setAccount] = useState(0);
+    const [invoices, setINvoices] = useState(0);
     const [item, setItem] = useState([
         {
             id: 1,
             backgroundColor: '#78AEFF',
-            title: 'Nhân viên',
-            numberStatistic: 50,
+            title: 'Account',
+            numberStatistic: 20,
             icon: <MaterialCommunityIcons name="account-group" size={24} color="black" />,
         },
         {
             id: 2,
             backgroundColor: '#FD767E',
-            title: 'Hóa đơn',
+            title: 'Invoice',
             numberStatistic: 50,
             icon: <FontAwesome5 name="file-invoice" size={24} color="black" />,
         },
@@ -40,9 +42,6 @@ export default function Home() {
     return (
         <View style={styles.container}>
             <View style={styles.container_top}>
-                {/* <View style={styles.container_top_btn}>
-                    <Entypo name="menu" size={38} color="black" />
-                </View> */}
                 <View style={styles.container_top_statistic}>
                     <FlatList
                         data={item}

@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const instance = axios.create({
     // baseURL: 'http://bill-rest.ap-southeast-2.elasticbeanstalk.com/api',
-    baseURL: 'http://192.168.1.111:8080/api',
+    baseURL: 'http://192.168.1.45:8080/api',
 });
 
 // Auth
@@ -64,6 +64,7 @@ export const validateRegister = async (email, otp) => {
         throw error;
     }
 };
+
 //user
 export const getUserByEmail = async (email) => {
     try {
@@ -144,10 +145,11 @@ export const resetPassword = async (email, password, retypePassword) => {
     }
 };
 //change password
-export const changePassword = async (email, password, retypePassword) => {
+export const changePassword = async (email, oldPassword, password, retypePassword) => {
     try {
         const response = await instance.post('/v1/auth/changePassword', {
             email,
+            oldPassword,
             password,
             retypePassword,
         });
@@ -185,6 +187,14 @@ export const getCompaniesByName = async (name) => {
         throw error;
     }
 };
+export const getCompaniesByStatus = async (status) => {
+    try {
+        const response = await instance.get(`/v1/companies?status=${status}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
 export const getAllCompanies = async () => {
     try {
         const response = await instance.get(`/v1/companies`);
@@ -196,11 +206,21 @@ export const getAllCompanies = async () => {
 export const updateCompany = async (id, name, logo, status, email, address, phone) => {
     let formData = new FormData();
     formData.append('id', id);
-    formData.append('name', name);
-    formData.append('address', address);
-    formData.append('email', email);
-    formData.append('phone', phone);
-    formData.append('status', status);
+    if (name) {
+        formData.append('name', name);
+    }
+    if (address) {
+        formData.append('address', address);
+    }
+    if (email) {
+        formData.append('email', email);
+    }
+    if (phone) {
+        formData.append('phone', phone);
+    }
+    if (status) {
+        formData.append('status', status);
+    }
     if (logo) {
         let filename = logo.split('/').pop();
         let match = /\.(\w+)$/.exec(filename);
@@ -224,11 +244,21 @@ export const updateCompany = async (id, name, logo, status, email, address, phon
 };
 export const createCompany = async (name, logo, status, email, address, phone) => {
     let formData = new FormData();
-    formData.append('name', name);
-    formData.append('address', address);
-    formData.append('email', email);
-    formData.append('phone', phone);
-    formData.append('status', status);
+    if (name) {
+        formData.append('name', name);
+    }
+    if (address) {
+        formData.append('address', address);
+    }
+    if (email) {
+        formData.append('email', email);
+    }
+    if (phone) {
+        formData.append('phone', phone);
+    }
+    if (status) {
+        formData.append('status', status);
+    }
     if (logo) {
         let filename = logo.split('/').pop();
         let match = /\.(\w+)$/.exec(filename);
@@ -277,6 +307,15 @@ export const getAllInvoice = async () => {
         throw error;
     }
 };
+export const getInvoiceByCompanyName = async (name) => {
+    try {
+        const response = await instance.get(`/v1/invoices?companyName=${name}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const deleteInvoiceById = async (id) => {
     console.log(id);
     try {
