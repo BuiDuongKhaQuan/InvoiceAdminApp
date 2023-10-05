@@ -1,18 +1,26 @@
-import { StyleSheet, Text, View, SafeAreaView, Image } from 'react-native';
 import React from 'react';
+import { StyleSheet, Text, View, SafeAreaView, Image } from 'react-native';
 import { createDrawerNavigator, DrawerItemList } from '@react-navigation/drawer';
-import { MaterialCommunityIcons, Entypo, FontAwesome5, AntDesign, MaterialIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, Entypo, AntDesign } from '@expo/vector-icons';
+import { useUserContext } from './UserContext';
 import Home from './Home';
 import Profile from './Profile';
-import { useUserContext } from './UserContext';
 import Bill from './Bill';
 import Customer from './Customer';
 import Company from './Company';
 import Products from './Products';
+import Button from '../components/Button';
 
-export default function DrawerNavigation() {
+export default function DrawerNavigation({ navigation }) {
     const Drawer = createDrawerNavigator();
-    const { state } = useUserContext();
+    const { state, dispatch } = useUserContext();
+    const handleLogOut = () => {
+        dispatch({
+            type: 'SIGN_OUT',
+        });
+        navigation.navigate('Login');
+    };
+
     return (
         <Drawer.Navigator
             drawerContent={(props) => {
@@ -38,6 +46,13 @@ export default function DrawerNavigation() {
                             <Text style={styles.name}>{state.user.name}</Text>
                         </View>
                         <DrawerItemList {...props} />
+                        <Button
+                            onPress={handleLogOut}
+                            text="Logout"
+                            customStylesBtn={{ backgroundColor: 'transparent', marginLeft: 13, borderWidth: 0 }}
+                            customStylesText={{ color: 'gray', textAlign: 'left', fontSize: 15, marginLeft: 20 }}
+                            iconLeft={<Entypo name="log-out" size={24} color="black" />}
+                        />
                     </SafeAreaView>
                 );
             }}
@@ -48,7 +63,7 @@ export default function DrawerNavigation() {
                 options={{
                     drawerLabel: 'Home',
                     title: 'Home',
-                    drawerIcon: () => <MaterialIcons name="house" size={24} color="black" />,
+                    drawerIcon: () => <AntDesign name="home" size={24} color="black" />,
                 }}
             />
             <Drawer.Screen
@@ -75,7 +90,7 @@ export default function DrawerNavigation() {
                 options={{
                     drawerLabel: 'Invoice Management',
                     title: 'Invoice Management',
-                    drawerIcon: () => <FontAwesome5 name="file-invoice" size={24} color="black" />,
+                    drawerIcon: () => <AntDesign name="filetext1" size={24} color="black" />,
                 }}
             />
             <Drawer.Screen
@@ -94,15 +109,6 @@ export default function DrawerNavigation() {
                     drawerLabel: 'Business Management',
                     title: 'Business Management',
                     drawerIcon: () => <MaterialCommunityIcons name="warehouse" size={24} color="black" />,
-                }}
-            />
-            <Drawer.Screen
-                name="Logout"
-                component={Profile}
-                options={{
-                    drawerLabel: 'Logout',
-                    title: 'Logout',
-                    drawerIcon: () => <Entypo name="log-out" size={24} color="black" />,
                 }}
             />
         </Drawer.Navigator>

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Modal, TouchableOpacity, Image, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, Modal, TouchableOpacity, Image, Keyboard, Alert } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Button from '../Button';
 import { white } from '../../constant/color';
@@ -28,7 +28,7 @@ export default function Popup({ visible, onClose, data, create }) {
         Keyboard.addListener('keyboardDidHide', () => {
             setKeyboardIsShow(false);
         });
-    });
+    }, [data]);
     const handleSelectedLogo = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true,
@@ -41,15 +41,24 @@ export default function Popup({ visible, onClose, data, create }) {
         }
         setLogo(result.assets[0].uri);
     };
-
+    const handleRestore = async () => {
+        setLoading(true);
+        try {
+            await updateCompany(data.id, name, logo, '1', email, address, phone);
+            Alert.alert('', 'Successfully Restore');
+        } catch (error) {
+            Alert.alert('', 'Error while restoring');
+        } finally {
+            setLoading(false);
+        }
+    };
     const handleDelete = async () => {
         setLoading(true);
         try {
-            const response = await deleteCompany(data.id);
-            setCompany(response);
-            console.log(response);
+            await deleteCompany(data.id);
+            Alert.alert('', 'Successfully Delete');
         } catch (error) {
-            console.error(' error:', error.response);
+            Alert.alert('', 'Error while deleting');
         } finally {
             setLoading(false);
         }
@@ -59,11 +68,11 @@ export default function Popup({ visible, onClose, data, create }) {
         setLoading(true);
         try {
             const response = await updateCompany(data.id, name, logo, '1', email, address, phone);
-            console.log(data.id);
             setCompany(response);
         } catch (error) {
             console.error(' error:', error.response);
         } finally {
+            setLogo(null);
             setLoading(false);
         }
     };
@@ -71,10 +80,9 @@ export default function Popup({ visible, onClose, data, create }) {
         setLoading(true);
         try {
             const response = await createCompany(name, logo, '1', email, address, phone);
-            console.log(data.id);
             setCompany(response);
         } catch (error) {
-            console.error(' error:', error.response);
+            console.error(' error:', error.response.data);
         } finally {
             setLoading(false);
         }
@@ -162,15 +170,17 @@ export default function Popup({ visible, onClose, data, create }) {
                         onPress={create ? handleCreate : handlerSend}
                         customStylesText={styles.text}
                         customStylesBtn={styles.btn}
-                        text="Save change"
+                        text={data ? 'Save change' : 'Create'}
                     />
 
-                    <Button
-                        onPress={handleDelete}
-                        customStylesText={styles.text}
-                        customStylesBtn={styles.btn}
-                        text="Delete"
-                    />
+                    {data && (
+                        <Button
+                            onPress={data.status == 1 ? handleDelete : handleRestore}
+                            customStylesText={styles.text}
+                            customStylesBtn={styles.btn}
+                            text={data.status == 1 ? 'Delete' : 'Restore'}
+                        />
+                    )}
                 </View>
             </View>
         </Modal>
