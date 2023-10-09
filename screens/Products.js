@@ -7,13 +7,14 @@ import { exportExcel } from '../utilies/export';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import Popup from '../components/Popup/product';
+import Loading from '../components/Loading';
 
 export default function Company() {
     const [dataPopup, setDataPopup] = useState();
     const [visible, setVisible] = useState(false);
     const [products, setProducts] = useState([]);
     const [nameSearch, setNamSearch] = useState('');
-    const [loadig, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const products = async () => {
@@ -29,6 +30,7 @@ export default function Company() {
         };
         products();
     }, []);
+
     const handleExportExcel = async () => await exportExcel(products, 'Product');
     const handleSearch = async () => {
         setLoading(true);
@@ -42,6 +44,7 @@ export default function Company() {
             setLoading(false);
         }
     };
+
     const ActionButton = ({ data }) => (
         <TouchableOpacity
             onPress={() => {
@@ -65,6 +68,7 @@ export default function Company() {
 
     return (
         <View style={styles.container}>
+            <Loading loading={loading} />
             {dataPopup && <Popup visible={visible} onClose={() => setVisible(false)} data={dataPopup} />}
             <Input
                 holder="Search by business name, email...."
