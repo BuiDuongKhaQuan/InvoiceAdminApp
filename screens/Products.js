@@ -8,6 +8,7 @@ import Button from '../components/Button';
 import Input from '../components/Input';
 import Popup from '../components/Popup/product';
 import Loading from '../components/Loading';
+import { useTranslation } from 'react-i18next';
 
 export default function Company() {
     const [dataPopup, setDataPopup] = useState();
@@ -15,7 +16,7 @@ export default function Company() {
     const [products, setProducts] = useState([]);
     const [nameSearch, setNamSearch] = useState('');
     const [loading, setLoading] = useState(false);
-
+    const { t } = useTranslation();
     useEffect(() => {
         const products = async () => {
             setLoading(true);
@@ -56,7 +57,7 @@ export default function Company() {
             <Foundation name="indent-more" size={24} color="green" />
         </TouchableOpacity>
     );
-    const headers = ['STT', 'Name', 'Price', 'Company', ''];
+    const headers = [t('common:no'), t('common:name'), t('common:price'), t('common:company'), ''];
     const data = () =>
         products.map((product) => [
             product.id,
@@ -71,7 +72,7 @@ export default function Company() {
             <Loading loading={loading} />
             {dataPopup && <Popup visible={visible} onClose={() => setVisible(false)} data={dataPopup} />}
             <Input
-                holder="Search by business name, email...."
+                holder={t('common:search')}
                 iconLeft={<Feather name="search" size={21} color="black" />}
                 iconRight={<Ionicons name="ios-qr-code-outline" size={21} color="black" />}
                 customStylesContainer={{
@@ -92,7 +93,7 @@ export default function Company() {
                 <View style={styles.container_top}>
                     <View style={styles.btns}>
                         <Button
-                            text="Export Excel"
+                            text={t('common:exportExcel')}
                             onPress={handleExportExcel}
                             iconLeft={<AntDesign name="export" size={17} color="black" />}
                             customStylesBtn={{

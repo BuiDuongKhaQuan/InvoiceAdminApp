@@ -9,14 +9,15 @@ import { exportExcel } from '../utilies/export';
 import Popup from '../components/Popup';
 import Loading from '../components/Loading';
 import SelectDropdown from 'react-native-select-dropdown';
-
+import { useTranslation } from 'react-i18next';
 export default function Company() {
+    const { t } = useTranslation();
     const [loading, setLoading] = useState(false);
     const [dataPopup, setDataPopup] = useState();
     const [visible, setVisible] = useState(false);
     const [customers, setCustomers] = useState([]);
     const [emailSearch, setEmailSearch] = useState('');
-    const type = ['Not activated', 'Active', 'Delete', 'Lockup', 'All'];
+    const type = [t('common:notActivated'), t('common:active'), t('common:delete'), t('common:lock'), t('common:all')];
     useEffect(() => {
         const customers = async () => {
             setLoading(true);
@@ -97,14 +98,14 @@ export default function Company() {
             <StatusView data={customer} />,
             <ActionButton data={customer} />,
         ]);
-    const headers = ['STT', 'Full name', 'Email', 'Status', ''];
+    const headers = [t('common:no'), t('common:fullName'), 'Email', t('common:status'), ''];
 
     return (
         <View style={styles.container}>
             <Loading loading={loading} />
             {dataPopup && <Popup visible={visible} onClose={() => setVisible(false)} data={dataPopup} />}
             <Input
-                holder="Search by business name, email...."
+                holder={t('common:search')}
                 iconLeft={<Feather name="search" size={21} color="black" />}
                 iconRight={<Ionicons name="ios-qr-code-outline" size={21} color="black" />}
                 customStylesContainer={{
@@ -126,7 +127,7 @@ export default function Company() {
                     <View style={styles.btns}>
                         <Button
                             onPress={handleExportExcel}
-                            text="Export Excel"
+                            text={t('common:exportExcel')}
                             iconLeft={<AntDesign name="export" size={17} color="black" />}
                             customStylesBtn={{
                                 width: '30%',
@@ -149,7 +150,7 @@ export default function Company() {
                                     handleFilter(index);
                                 }}
                                 buttonStyle={styles.dropdown_btn}
-                                defaultButtonText={'Selected'}
+                                defaultButtonText={t('common:select')}
                                 renderDropdownIcon={() => <Entypo name="chevron-small-down" size={24} color="black" />}
                                 dropdownIconPosition="right"
                                 buttonTextAfterSelection={(selectedItem, index) => {

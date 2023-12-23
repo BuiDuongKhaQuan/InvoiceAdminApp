@@ -3,35 +3,38 @@ import React, { useEffect, useState } from 'react';
 import { MaterialCommunityIcons, FontAwesome5, AntDesign } from '@expo/vector-icons';
 import Button from '../components/Button';
 import { getAllCompanies, getAllInvoice, getAllProduct, getAllUser } from '../Service/api';
+import { useTranslation } from 'react-i18next';
+
 export default function Home() {
+    const { t } = useTranslation();
     const [account, setAccount] = useState(0);
     const [invoices, setINvoices] = useState(0);
     const [item, setItem] = useState([
         {
             id: 1,
             backgroundColor: '#78AEFF',
-            title: 'Account',
+            title: t('common:account'),
             numberStatistic: 20,
             icon: <MaterialCommunityIcons name="account-group" size={24} color="black" />,
         },
         {
             id: 2,
             backgroundColor: '#FD767E',
-            title: 'Invoice',
+            title: t('common:invoice'),
             numberStatistic: 50,
             icon: <FontAwesome5 name="file-invoice" size={24} color="black" />,
         },
         {
             id: 3,
             backgroundColor: '#58DB4D',
-            title: 'Hóa đơn tuần',
+            title: t('common:invoiceWeek'),
             numberStatistic: 50,
             icon: <MaterialCommunityIcons name="calendar-month" size={24} color="black" />,
         },
         {
             id: 4,
             backgroundColor: '#EAEC73',
-            title: 'Hóa đơn tháng',
+            title: t('common:invoiceMonth'),
             numberStatistic: 50,
             icon: <MaterialCommunityIcons name="calendar-month" size={24} color="black" />,
         },
@@ -64,14 +67,26 @@ export default function Home() {
             <View style={styles.container_center}>
                 <View style={styles.container_center1}>
                     <View style={styles.center_left}>
-                        <Text style={styles.text}>Generality</Text>
-                        <Text style={{ marginVertical: 10, fontSize: 18 }}>September 2023</Text>
+                        <Text style={styles.text}>{t('common:overview')}</Text>
+                        <Text style={{ marginVertical: 10, fontSize: 18 }}>1/2/2023</Text>
                     </View>
                     <View style={styles.center_right}>
                         <View style={styles.center_right1}>
-                            <Button text="Day" customStylesBtn={styles.btn} customStylesText={styles.btnText} />
-                            <Button text="Month" customStylesBtn={styles.btn} customStylesText={styles.btnText} />
-                            <Button text="Year" customStylesBtn={[styles.btn]} customStylesText={styles.btnText} />
+                            <Button
+                                text={t('common:day')}
+                                customStylesBtn={styles.btn}
+                                customStylesText={styles.btnText}
+                            />
+                            <Button
+                                text={t('common:month')}
+                                customStylesBtn={styles.btn}
+                                customStylesText={styles.btnText}
+                            />
+                            <Button
+                                text={t('common:year')}
+                                customStylesBtn={[styles.btn]}
+                                customStylesText={styles.btnText}
+                            />
                         </View>
                         <AntDesign
                             name="clouddownloado"

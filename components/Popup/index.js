@@ -8,8 +8,10 @@ import Input from '../Input';
 import { deleteUser, getCompaniesById, getUserByEmail, updateStatus, updateUser } from '../../Service/api';
 import SelectDropdown from 'react-native-select-dropdown';
 import Loading from '../Loading';
+import { useTranslation } from 'react-i18next';
 
 export default function Popup({ visible, onClose, data }) {
+    const { t } = useTranslation();
     const [user, setUser] = useState(data);
     const [company, setCompany] = useState('');
     const [fullName, setFullName] = useState();
@@ -21,7 +23,7 @@ export default function Popup({ visible, onClose, data }) {
     const [loading, setLoading] = useState(false);
     const [keyboardIsShow, setKeyboardIsShow] = useState(false);
 
-    const genders = ['Male', 'Female'];
+    const genders = [t('common:male'), t('common:female')];
     const roles = ['ROLE_ADMIN', 'ROLE_MOD', 'ROLE_USER', 'ROLE_GUEST'];
     const newStyle = keyboardIsShow ? { ...styles.container, height: '100%' } : { ...styles.container };
 
@@ -50,9 +52,9 @@ export default function Popup({ visible, onClose, data }) {
         try {
             const response = await updateStatus(data.id, '3');
             setUser(response);
-            Alert.alert('Success');
+            Alert.alert(t('common:success'));
         } catch (error) {
-            Alert.alert('Error', 'Transmission error, please try again later!');
+            Alert.alert(t('common:errLogin'), t('common:transmissionError'));
         } finally {
             setLoading(false);
         }
@@ -61,10 +63,10 @@ export default function Popup({ visible, onClose, data }) {
         setLoading(true);
         try {
             const response = await updateStatus(data.id, '1');
-            Alert.alert('Success');
+            Alert.alert(t('common:success'));
         } catch (error) {
             console.log(error);
-            Alert.alert('Error', 'Transmission error, please try again later!');
+            Alert.alert(t('common:errLogin'), t('common:transmissionError'));
         } finally {
             setLoading(false);
         }
@@ -73,9 +75,9 @@ export default function Popup({ visible, onClose, data }) {
         setLoading(true);
         try {
             const response = await deleteUser(data.id);
-            Alert.alert('Success');
+            Alert.alert(t('common:success'));
         } catch (error) {
-            Alert.alert('Error', 'Transmission error, please try again later!');
+            Alert.alert(t('common:errLogin'), t('common:transmissionError'));
         } finally {
             setLoading(false);
         }
@@ -85,9 +87,9 @@ export default function Popup({ visible, onClose, data }) {
         setLoading(true);
         try {
             await updateUser(data.id, fullName, role, address, gender, phone);
-            Alert.alert('Success');
+            Alert.alert(t('common:success'));
         } catch (error) {
-            Alert.alert('Error', 'Transmission error, please try again later!');
+            Alert.alert(t('common:errLogin'), t('common:transmissionError'));
         } finally {
             setLoading(false);
         }
@@ -100,7 +102,7 @@ export default function Popup({ visible, onClose, data }) {
                     <View style={styles.header}>
                         <View style={styles.header_item}></View>
                         <View style={styles.header_item}>
-                            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Information</Text>
+                            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{t('common:information')}</Text>
                         </View>
                         <TouchableOpacity
                             style={{ ...styles.header_item, alignItems: 'flex-end', marginRight: 20 }}
@@ -123,7 +125,7 @@ export default function Popup({ visible, onClose, data }) {
                         </View>
                         <View style={styles.information}>
                             <View style={styles.input_item}>
-                                <Text style={styles.title}>Full name</Text>
+                                <Text style={styles.title}>{t('common:fullName')}</Text>
                                 <Input
                                     value={fullName}
                                     onChangeText={(name) => setFullName(name)}
@@ -141,7 +143,7 @@ export default function Popup({ visible, onClose, data }) {
                                 />
                             </View>
                             <View style={styles.input_item}>
-                                <Text style={styles.title}>Address</Text>
+                                <Text style={styles.title}>{t('common:address')}</Text>
                                 <Input
                                     value={address}
                                     onChangeText={(address) => setAddress(address)}
@@ -155,7 +157,7 @@ export default function Popup({ visible, onClose, data }) {
                 <View style={styles.center}>
                     <View style={styles.center_item}>
                         <View style={styles.input_item}>
-                            <Text style={styles.title}>Phone</Text>
+                            <Text style={styles.title}>{t('common:phone')}</Text>
                             <Input
                                 value={phone}
                                 onChangeText={(phone) => setPhone(phone)}
@@ -167,7 +169,7 @@ export default function Popup({ visible, onClose, data }) {
                         <View style={styles.input_item}>
                             {company != null ? (
                                 <>
-                                    <Text style={styles.title}>Company</Text>
+                                    <Text style={styles.title}>{t('common:company')}</Text>
                                     <Input value={company} customStylesContainer={styles.input} holder={company} />
                                 </>
                             ) : (
@@ -179,7 +181,7 @@ export default function Popup({ visible, onClose, data }) {
                     </View>
                     <View style={styles.center_item}>
                         <View style={styles.input_item}>
-                            <Text style={styles.title}>Gender</Text>
+                            <Text style={styles.title}>{t('common:gender')}</Text>
                             <SelectDropdown
                                 data={genders}
                                 onSelect={(selectedItem, index) => {
@@ -198,7 +200,7 @@ export default function Popup({ visible, onClose, data }) {
                             />
                         </View>
                         <View style={styles.input_item}>
-                            <Text style={styles.title}>Role</Text>
+                            <Text style={styles.title}>{t('common:role')}</Text>
                             <SelectDropdown
                                 data={roles}
                                 onSelect={(selectedItem, index) => {
@@ -223,14 +225,14 @@ export default function Popup({ visible, onClose, data }) {
                         onPress={handlerSend}
                         customStylesText={styles.text}
                         customStylesBtn={styles.btn}
-                        text="Save change"
+                        text={t('common:saveChanges')}
                     />
                     {user.status === 1 && (
                         <Button
                             onPress={handleLockup}
                             customStylesText={styles.text}
                             customStylesBtn={styles.btn}
-                            text="Lockup"
+                            text={t('common:lock')}
                         />
                     )}
                     {user.status === 2 && (
@@ -238,18 +240,14 @@ export default function Popup({ visible, onClose, data }) {
                             onPress={handleUnlock}
                             customStylesText={styles.text}
                             customStylesBtn={styles.btn}
-                            text="Unlock"
+                            text={t('common:unLock')}
                         />
                     )}
                     <Button
                         customStylesText={styles.text}
-                        onPress={
-                            user.status === 2
-                                ? () => Alert.alert('', 'The account has been deleted before')
-                                : handleDelete
-                        }
+                        onPress={user.status === 2 ? () => Alert.alert('', t('common:deleteAcc')) : handleDelete}
                         customStylesBtn={user.status === 2 ? { ...styles.btn, backgroundColor: 'red' } : styles.btn}
-                        text="Delete"
+                        text={t('common:delete')}
                     />
                 </View>
             </View>

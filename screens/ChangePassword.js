@@ -8,8 +8,10 @@ import { fontSizeDefault, fontSizeMenuTitle } from '../constant/fontSize';
 import { changePassword } from '../Service/api';
 import { useUserContext } from './UserContext';
 import Loading from '../components/Loading';
+import { useTranslation } from 'react-i18next';
 
 export default function ChangePassword({ navigation }) {
+    const { t } = useTranslation();
     const { state } = useUserContext();
     const [passOld, setPassOld] = useState('');
     const [passNew, setPassNew] = useState('');
@@ -38,10 +40,10 @@ export default function ChangePassword({ navigation }) {
         setLoading(true);
         try {
             const response = await changePassword(state.user.email, passOld, passNew, confirmPass);
-            Alert.alert('', 'Successfully changed password');
+            Alert.alert('', t('common:successChangePassword'));
             navigation.navigate('Profile');
         } catch (error) {
-            Alert.alert('', 'Error networking');
+            Alert.alert('', t('common:errNetwork'));
         } finally {
             setLoading(false);
         }
@@ -61,19 +63,19 @@ export default function ChangePassword({ navigation }) {
     return (
         <View style={{ flex: 1 }}>
             <Loading loading={loading} />
-            <Header title="Password" />
+            <Header title={t('common:password')} />
             <ScrollView style={styles.container}>
                 <View style={styles.content_center}>
-                    <Text style={styles.content_title}>Change password</Text>
+                    <Text style={styles.content_title}>{t('common:changePassword')}</Text>
                     <Input
                         text
                         customStylesInput={styles.input}
                         customStylesContainer={styles.inputContainer}
                         customStylesTextValidate={styles.textValidate}
                         validate={errorPassOld}
-                        validateText="Incorrect password"
+                        validateText={t('common:passwordIncorrect')}
                         onChangeText={handleChangePassOld}
-                        holder="Old password"
+                        holder={t('common:oldPass')}
                         value={passOld}
                     />
                     <Input
@@ -82,9 +84,9 @@ export default function ChangePassword({ navigation }) {
                         customStylesContainer={styles.inputContainer}
                         customStylesTextValidate={styles.textValidate}
                         validate={errorPassNew}
-                        validateText="Password must be 6 to 8 characters"
+                        validateText={t('common:format')}
                         onChangeText={handleChangePassNew}
-                        holder="New password"
+                        holder={t('common:newPass')}
                         value={passNew}
                     />
 
@@ -94,20 +96,20 @@ export default function ChangePassword({ navigation }) {
                         customStylesContainer={styles.inputContainer}
                         customStylesTextValidate={styles.textValidate}
                         validate={errorConfirmPass}
-                        validateText="Password incorrect"
+                        validateText={t('common:passwordIncorrect')}
                         onChangeText={handleChangeConfirm}
-                        holder="Re new password"
+                        holder={t('common:renewPass')}
                         value={confirmPass}
                     />
 
                     <Button
                         onPress={handlePress}
                         customStylesBtn={{ width: 340, height: 50, marginLeft: 24 }}
-                        text="Confirm"
+                        text={t('common:confirm')}
                     />
 
                     <Text onPress={() => navigation.navigate('ForgotPassword')} style={styles.forgot}>
-                        Forgot password?
+                        {t('common:forgotPass')}?
                     </Text>
                 </View>
             </ScrollView>

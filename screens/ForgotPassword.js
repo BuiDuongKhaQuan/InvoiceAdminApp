@@ -6,8 +6,10 @@ import { isValidateEmail, isValidateCode } from '../utilies/validate';
 import { fontSizeDefault } from '../constant/fontSize';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import BackgroundImage from '../layouts/DefaultLayout/BackgroundImage';
+import { useTranslation } from 'react-i18next';
 
 export default function ForgotPassword({ navigation }) {
+    const { t } = useTranslation();
     const [keyboardIsShow, setKeyboardIsShow] = useState(false);
     const [email, setEmail] = useState('');
     const [code, setCode] = useState('');
@@ -58,7 +60,7 @@ export default function ForgotPassword({ navigation }) {
                     onChangeText={handleChangeEmail}
                     value={email}
                     validate={errorEmail}
-                    validateText="Please enter the correct email format"
+                    validateText={t('common:format')}
                     holder="Email"
                     iconLeft={<MaterialCommunityIcons name="email-outline" size={24} color="black" />}
                     btnSend
@@ -67,20 +69,14 @@ export default function ForgotPassword({ navigation }) {
                     onChangeText={handleChangeCode}
                     value={code}
                     validate={errorCode}
-                    validateText="Verification code must be 4 characters long!"
+                    validateText={t('common:verifyCode')}
                     customStylesInput={{ marginLeft: 50 }}
-                    holder="Verification"
+                    holder={t('common:verify')}
                 />
 
                 {keyboardIsShow || (
                     <>
-                        <Button onPress={handlePress} text="Confirm" customStylesBtn={styles.btn} />
-                        <View style={styles.register}>
-                            <Text style={styles.register_text}>Do you have an account? </Text>
-                            <Text onPress={() => navigation.navigate('Login')} style={styles.register_btn}>
-                                Login
-                            </Text>
-                        </View>
+                        <Button onPress={handlePress} text={t('common:confirm')} customStylesBtn={styles.btn} />
                     </>
                 )}
             </View>
