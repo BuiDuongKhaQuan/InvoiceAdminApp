@@ -10,8 +10,10 @@ import Customer from './Customer';
 import Company from './Company';
 import Products from './Products';
 import Button from '../components/Button';
-
+import Setting from './Settings';
+import { useTranslation } from 'react-i18next';
 export default function DrawerNavigation({ navigation }) {
+    const { t } = useTranslation();
     const Drawer = createDrawerNavigator();
     const { state, dispatch } = useUserContext();
     const handleLogOut = () => {
@@ -48,7 +50,7 @@ export default function DrawerNavigation({ navigation }) {
                         <DrawerItemList {...props} />
                         <Button
                             onPress={handleLogOut}
-                            text="Logout"
+                            text={t('common:logout')}
                             customStylesBtn={{ backgroundColor: 'transparent', marginLeft: 13, borderWidth: 0 }}
                             customStylesText={{ color: 'gray', textAlign: 'left', fontSize: 15, marginLeft: 20 }}
                             iconLeft={<Entypo name="log-out" size={24} color="black" />}
@@ -62,7 +64,7 @@ export default function DrawerNavigation({ navigation }) {
                 component={Home}
                 options={{
                     drawerLabel: 'Home',
-                    title: 'Home',
+                    title: t('common:home'),
                     drawerIcon: () => <AntDesign name="home" size={24} color="black" />,
                 }}
             />
@@ -70,8 +72,8 @@ export default function DrawerNavigation({ navigation }) {
                 name="Profile"
                 component={Profile}
                 options={{
-                    drawerLabel: 'Profile',
-                    title: 'Profile',
+                    drawerLabel: t('common:profile'),
+                    title: t('common:profile'),
                     drawerIcon: () => <MaterialCommunityIcons name="shield-account-outline" size={24} color="black" />,
                 }}
             />
@@ -79,8 +81,8 @@ export default function DrawerNavigation({ navigation }) {
                 name="Product Management"
                 component={Products}
                 options={{
-                    drawerLabel: 'Product Management',
-                    title: 'Product Management',
+                    drawerLabel: t('common:productManagement'),
+                    title: t('common:productManagement'),
                     drawerIcon: () => <AntDesign name="profile" size={24} color="black" />,
                 }}
             />
@@ -88,8 +90,8 @@ export default function DrawerNavigation({ navigation }) {
                 name="Invoice Management"
                 component={Bill}
                 options={{
-                    drawerLabel: 'Invoice Management',
-                    title: 'Invoice Management',
+                    drawerLabel: t('common:invoiceManagement'),
+                    title: t('common:invoiceManagement'),
                     drawerIcon: () => <AntDesign name="filetext1" size={24} color="black" />,
                 }}
             />
@@ -97,8 +99,8 @@ export default function DrawerNavigation({ navigation }) {
                 name="Customer Management"
                 component={Customer}
                 options={{
-                    drawerLabel: 'Customer Management',
-                    title: 'Customer Management',
+                    drawerLabel: t('common:customerManagement'),
+                    title: t('common:customerManagement'),
                     drawerIcon: () => <MaterialCommunityIcons name="account-group" size={24} color="black" />,
                 }}
             />
@@ -106,9 +108,18 @@ export default function DrawerNavigation({ navigation }) {
                 name="Business Management"
                 component={Company}
                 options={{
-                    drawerLabel: 'Business Management',
-                    title: 'Business Management',
+                    drawerLabel: t('common:businessManagement'),
+                    title: t('common:businessManagement'),
                     drawerIcon: () => <MaterialCommunityIcons name="warehouse" size={24} color="black" />,
+                }}
+            />
+            <Drawer.Screen
+                name="Settings"
+                component={Setting}
+                options={{
+                    drawerLabel: t('common:setting'),
+                    title: t('common:setting'),
+                    drawerIcon: () => <MaterialCommunityIcons name="cog" size={24} color="black" />,
                 }}
             />
         </Drawer.Navigator>

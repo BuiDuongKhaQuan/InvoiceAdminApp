@@ -9,8 +9,10 @@ import BackgroundImage from '../layouts/DefaultLayout/BackgroundImage';
 import { getCompaniesById, login } from '../Service/api';
 import { useUserContext } from './UserContext'; // Đảm bảo thay đổi đường dẫn đúng
 import Loading from '../components/Loading';
+import { useTranslation } from 'react-i18next';
 
 export default function Login({ navigation }) {
+    const { t } = useTranslation();
     const [keyboardIsShow, setKeyboardIsShow] = useState(false);
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
@@ -53,15 +55,15 @@ export default function Login({ navigation }) {
                 });
                 navigation.navigate('Drawer');
             } else {
-                Alert.alert('Login error!', 'You do not have access!!!');
+                Alert.alert(t('common:errLogin'), t('common:noAccess'));
             }
         } catch (error) {
             if (error.response && error.response.status === 400) {
-                Alert.alert('Login error!', error.response.data.message);
+                Alert.alert(t('common:errLogin'), error.response.data.message);
             } else if (error.response && error.response.status === 404) {
-                Alert.alert('Login error!', error.response.data.message);
+                Alert.alert(t('common:errLogin'), error.response.data.message);
             } else {
-                Alert.alert('Login error', 'Transmission error, please try again later!!');
+                Alert.alert(t('common:errLogin'), t('common:transmissionError'));
             }
         } finally {
             setLoading(false);
@@ -91,7 +93,7 @@ export default function Login({ navigation }) {
                         onChangeText={handleChangeEmail}
                         value={email}
                         validate={errorEmail}
-                        validateText="Vui lòng nhập đúng định dạng email"
+                        validateText={t('common:formatEmail')}
                         holder="example@example.com"
                         iconLeft={<MaterialCommunityIcons name="email-outline" size={24} color="black" />}
                     />
@@ -99,18 +101,18 @@ export default function Login({ navigation }) {
                         onChangeText={handleChangePass}
                         value={pass}
                         validate={errorPass}
-                        validateText="Mật khẩu phải đủ 6 đến 8 ký tự"
+                        validateText={t('common:format')}
                         pass
-                        holder="Password"
+                        holder={t('common:password')}
                         iconLeft={<Ionicons name="lock-closed-outline" size={24} color="black" />}
                     />
 
-                    {keyboardIsShow || <Button onPress={handlePress} text="Login" />}
+                    {keyboardIsShow || <Button onPress={handlePress} text={t('common:login')} />}
                 </View>
                 {keyboardIsShow || (
                     <View style={styles.container_botom}>
                         <Text onPress={() => navigation.navigate('ForgotPassword')} style={styles.forgot}>
-                            Forgot Password?
+                            {t('common:forgotPass')}?
                         </Text>
                     </View>
                 )}

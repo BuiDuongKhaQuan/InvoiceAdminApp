@@ -8,8 +8,10 @@ import Input from '../Input';
 import { createCompany, deleteCompany, updateCompany } from '../../Service/api';
 import * as ImagePicker from 'expo-image-picker';
 import Loading from '../Loading';
+import { useTranslation } from 'react-i18next';
 
 export default function Popup({ visible, onClose, data, create }) {
+    const { t } = useTranslation();
     const [company, setCompany] = useState(data);
     const [name, setName] = useState();
     const [email, setEmail] = useState();
@@ -108,7 +110,7 @@ export default function Popup({ visible, onClose, data, create }) {
                     <View style={styles.header}>
                         <View style={styles.header_item}></View>
                         <View style={styles.header_item}>
-                            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Information</Text>
+                            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{t('common:information')}</Text>
                         </View>
                         <TouchableOpacity
                             style={{ ...styles.header_item, alignItems: 'flex-end', marginRight: 20 }}
@@ -122,16 +124,16 @@ export default function Popup({ visible, onClose, data, create }) {
                             <TouchableOpacity onPress={handleSelectedLogo}>
                                 <Image source={newLogo()} style={styles.img} />
                             </TouchableOpacity>
-                            <Text style={styles.text}>{data ? data.name : 'Enter value'}</Text>
+                            <Text style={styles.text}>{data ? data.name : t('common:enterValue')}</Text>
                         </View>
                         <View style={styles.information}>
                             <View style={styles.input_item}>
-                                <Text style={styles.title}>Name</Text>
+                                <Text style={styles.title}>{t('common:name')}</Text>
                                 <Input
                                     value={name}
                                     onChangeText={(name) => setName(name)}
                                     customStylesContainer={styles.input}
-                                    holder={data ? data.name : 'Enter value'}
+                                    holder={data ? data.name : t('common:enterValue')}
                                 />
                             </View>
                             <View style={styles.input_item}>
@@ -140,11 +142,11 @@ export default function Popup({ visible, onClose, data, create }) {
                                     value={email}
                                     onChangeText={(email) => setEmail(email)}
                                     customStylesContainer={styles.input}
-                                    holder={data ? data.email : 'Enter value'}
+                                    holder={data ? data.email : t('common:enterValue')}
                                 />
                             </View>
                             <View style={styles.input_item}>
-                                <Text style={styles.title}>Address</Text>
+                                <Text style={styles.title}>{t('common:address')}</Text>
                                 <Input
                                     value={address}
                                     onChangeText={(address) => setAddress(address)}
@@ -153,12 +155,12 @@ export default function Popup({ visible, onClose, data, create }) {
                                 />
                             </View>
                             <View style={styles.input_item}>
-                                <Text style={styles.title}>Phone</Text>
+                                <Text style={styles.title}>{t('common:phone')}</Text>
                                 <Input
                                     value={phone}
                                     onChangeText={(phone) => setPhone(phone)}
                                     customStylesContainer={styles.input}
-                                    holder={data ? data.phone : 'Enter value'}
+                                    holder={data ? data.phone : t('common:address')}
                                 />
                             </View>
                         </View>
@@ -170,7 +172,7 @@ export default function Popup({ visible, onClose, data, create }) {
                         onPress={create ? handleCreate : handlerSend}
                         customStylesText={styles.text}
                         customStylesBtn={styles.btn}
-                        text={data ? 'Save change' : 'Create'}
+                        text={data ? t('common:saveChanges') : t('common:create')}
                     />
 
                     {data && (
@@ -178,7 +180,7 @@ export default function Popup({ visible, onClose, data, create }) {
                             onPress={data.status == 1 ? handleDelete : handleRestore}
                             customStylesText={styles.text}
                             customStylesBtn={styles.btn}
-                            text={data.status == 1 ? 'Delete' : 'Restore'}
+                            text={data.status == 1 ? t('common:delete') : t('common:restore')}
                         />
                     )}
                 </View>

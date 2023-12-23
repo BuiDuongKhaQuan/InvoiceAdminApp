@@ -8,8 +8,10 @@ import { deleteInvoiceById, getAllCompanies, getAllInvoice, getInvoiceByCompanyN
 import { exportExcel } from '../utilies/export';
 import Loading from '../components/Loading';
 import SelectDropdown from 'react-native-select-dropdown';
+import { useTranslation } from 'react-i18next';
 
 export default function Company() {
+    const { t } = useTranslation();
     const [invoices, setInvoices] = useState([]);
     const [loading, setLoading] = useState(false);
     const [companys, setCompanys] = useState([]);
@@ -66,7 +68,7 @@ export default function Company() {
             </TouchableOpacity>
         </View>
     );
-    const headers = ['STT', 'Company', 'Customer', ''];
+    const headers = [t('common:no'), t('common:company'), t('common:custommer'), ''];
 
     const data = () =>
         invoices.map((invoice) => [
@@ -80,7 +82,7 @@ export default function Company() {
         <View style={styles.container}>
             <Loading loading={loading} />
             <Input
-                holder="Search by business name, email...."
+                holder={t('common:search')}
                 iconLeft={<Feather name="search" size={21} color="black" />}
                 iconRight={<Ionicons name="ios-qr-code-outline" size={21} color="black" />}
                 customStylesContainer={{
@@ -101,7 +103,7 @@ export default function Company() {
                 <View style={styles.container_top}>
                     <View style={styles.btns}>
                         <Button
-                            text="Export Excel"
+                            text={t('common:exportExcel')}
                             onPress={handleExportExcel}
                             iconLeft={<AntDesign name="export" size={17} color="black" />}
                             customStylesBtn={{
@@ -125,7 +127,7 @@ export default function Company() {
                                     handleFilter(selectedItem.name);
                                 }}
                                 buttonStyle={styles.dropdown_btn}
-                                defaultButtonText={'Company'}
+                                defaultButtonText={t('common:company')}
                                 renderDropdownIcon={() => <Entypo name="chevron-small-down" size={24} color="black" />}
                                 dropdownIconPosition="right"
                                 buttonTextAfterSelection={(selectedItem, index) => {

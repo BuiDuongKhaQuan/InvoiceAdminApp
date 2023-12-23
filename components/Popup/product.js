@@ -8,8 +8,10 @@ import Input from '../Input';
 import { createCompany, deleteCompany, updateProduct } from '../../Service/api';
 import * as ImagePicker from 'expo-image-picker';
 import Loading from '../Loading';
+import { useTranslation } from 'react-i18next';
 
 export default function Popup({ visible, onClose, data, create }) {
+    const { t } = useTranslation();
     const [product, setProduct] = useState(data);
     const [image, setImage] = useState(null);
     const [name, setName] = useState();
@@ -98,7 +100,7 @@ export default function Popup({ visible, onClose, data, create }) {
                     <View style={styles.header}>
                         <View style={styles.header_item}></View>
                         <View style={styles.header_item}>
-                            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Information</Text>
+                            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{t('common:information')}</Text>
                         </View>
                         <TouchableOpacity
                             style={{ ...styles.header_item, alignItems: 'flex-end', marginRight: 20 }}
@@ -115,30 +117,30 @@ export default function Popup({ visible, onClose, data, create }) {
                         </View>
                         <View style={styles.information}>
                             <View style={styles.input_item}>
-                                <Text style={styles.title}>Name</Text>
+                                <Text style={styles.title}>{t('common:name')}</Text>
                                 <Input
                                     value={name}
                                     onChangeText={(name) => setName(name)}
                                     customStylesContainer={styles.input}
-                                    holder={data ? data.name : 'Enter value'}
+                                    holder={data ? data.name : 'common:enterName'}
                                 />
                             </View>
                             <View style={styles.input_item}>
-                                <Text style={styles.title}>Price</Text>
+                                <Text style={styles.title}>{t('common:price')}</Text>
                                 <Input
                                     value={price}
                                     onChangeText={(price) => setPrice(price)}
                                     customStylesContainer={styles.input}
-                                    holder={data ? data.price.toString() : 'Enter value'}
+                                    holder={data ? data.price.toString() : 'common:enterValue'}
                                 />
                             </View>
                             <View style={styles.input_item}>
-                                <Text style={styles.title}>Description</Text>
+                                <Text style={styles.title}>{t('common:description')}</Text>
                                 <Input
                                     value={description}
                                     onChangeText={(description) => setDesciption(description)}
                                     customStylesContainer={styles.input}
-                                    holder={data ? data.description : 'Enter value'}
+                                    holder={data ? data.description : 'common:enterValue'}
                                 />
                             </View>
                         </View>
@@ -150,14 +152,14 @@ export default function Popup({ visible, onClose, data, create }) {
                         onPress={create ? handleCreate : handlerSend}
                         customStylesText={styles.text}
                         customStylesBtn={styles.btn}
-                        text="Save change"
+                        text={t('common:saveChanges')}
                     />
 
                     <Button
                         onPress={handleDelete}
                         customStylesText={styles.text}
                         customStylesBtn={styles.btn}
-                        text="Delete"
+                        text={t('common:delete')}
                     />
                 </View>
             </View>

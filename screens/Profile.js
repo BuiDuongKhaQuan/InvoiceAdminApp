@@ -8,12 +8,13 @@ import * as ImagePicker from 'expo-image-picker';
 import Loading from '../components/Loading';
 import axios from 'axios';
 import { white } from '../constant/color';
+import { useTranslation } from 'react-i18next';
 
 export default function Profile({ navigation }) {
     const { state, dispatch } = useUserContext();
     const [loading, setLoading] = useState(false);
     const [name, setName] = useState(state.user.name);
-
+    const { t } = useTranslation();
     const takePhotoAndUpload = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true,
@@ -120,10 +121,10 @@ export default function Profile({ navigation }) {
             </View>
             <View style={styles.container_center}>
                 <View style={styles.input_center}>
-                    <Text style={styles.name}>Name</Text>
+                    <Text style={styles.name}>{t('common:name')}</Text>
                     <Input
-                        validateText="Vui lòng nhập đúng định dạng email"
-                        holder="Enter name?"
+                        validateText={t('common:formatEmail')}
+                        holder={t('common:enterName')}
                         value={name}
                         onChangeText={(text) => setName(text)}
                         customStylesContainer={styles.input}
@@ -142,9 +143,9 @@ export default function Profile({ navigation }) {
                     />
                 </View>
                 <View style={styles.input_center}>
-                    <Text style={styles.name}>Password</Text>
+                    <Text style={styles.name}>{t('common:password')}</Text>
                     <Button
-                        text="Change password"
+                        text={t('common:changePassword')}
                         onPress={() => navigation.navigate('ChangePassword')}
                         customStylesBtn={{ ...styles.btn, backgroundColor: white, borderWidth: 0 }}
                         customStylesText={{ ...styles.text_btn, color: 'gray', fontSize: 15 }}
@@ -154,7 +155,7 @@ export default function Profile({ navigation }) {
                 </View>
             </View>
             <View style={styles.container_bottom}>
-                <Button text="Save" customStylesBtn={styles.btn} onPress={handlerSend} />
+                <Button text={t('common:save')} customStylesBtn={styles.btn} onPress={handlerSend} />
             </View>
         </View>
     );

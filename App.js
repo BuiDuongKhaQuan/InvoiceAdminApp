@@ -7,7 +7,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import DrawerNavigation from './screens/DrawerNavigation';
 import { UserProvider } from './screens/UserContext';
 import ChangePassword from './screens/ChangePassword';
-
+import './constant/translations/DCSLocalize';
+import Language from './screens/Setting/Language';
+import Notification from './screens/Setting/Notification';
 export default function App() {
     const Stack = createNativeStackNavigator();
     const headerNone = { headerShown: false };
@@ -19,6 +21,8 @@ export default function App() {
                     <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={headerNone} />
                     <Stack.Screen name="Drawer" component={DrawerNavigation} options={{ headerShown: false }} />
                     <Stack.Screen name="ChangePassword" component={ChangePassword} options={{ headerShown: false }} />
+                    <Stack.Screen name="Language" component={Language} options={{ headerShown: false }} />
+                    <Stack.Screen name="Notification" component={Notification} options={{ headerShown: false }} />
                 </Stack.Navigator>
             </NavigationContainer>
         </UserProvider>
