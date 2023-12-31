@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const instance = axios.create({
     // baseURL: 'http://bill-rest.ap-southeast-2.elasticbeanstalk.com/api',
-    baseURL: 'http://192.168.1.4:8080/api',
+    baseURL: 'http://192.168.1.5:8080/api',
 });
 
 // Auth
@@ -85,6 +85,14 @@ export const getUserByStatus = async (status) => {
 export const getAllUser = async () => {
     try {
         const response = await instance.get('/v1/auth/users');
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+export const getAllUser1 = async (limit, page) => {
+    try {
+        const response = await instance.get(`/v1/auth/users?limit=${limit}&page=${page}`);
         return response.data;
     } catch (error) {
         throw error;
@@ -203,6 +211,14 @@ export const getAllCompanies = async () => {
         throw error;
     }
 };
+export const getAllCompanies1 = async (limit, page) => {
+    try {
+        const response = await instance.get(`/v1/companies?limit=${limit}&page=${page}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
 export const updateCompany = async (id, name, logo, status, email, address, phone) => {
     let formData = new FormData();
     formData.append('id', id);
@@ -302,6 +318,14 @@ export const invoices = async (emailUser, emailGuest, note, isPaid, listOrders, 
 export const getAllInvoice = async () => {
     try {
         const response = await instance.get('/v1/invoices');
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+export const getAllInvoice1 = async (limit, page) => {
+    try {
+        const response = await instance.get(`/v1/invoices?limit=${limit}&page=${page}`);
         return response.data;
     } catch (error) {
         throw error;
