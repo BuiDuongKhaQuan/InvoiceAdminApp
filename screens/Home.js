@@ -5,7 +5,8 @@ import Button from '../components/Button';
 import { getAllCompanies1, getAllInvoice1, getAllUser1 } from '../Service/api';
 import { useTranslation } from 'react-i18next';
 import Loading from '../components/Loading';
-
+import { LineChart } from 'react-native-chart-kit';
+import { Dimensions } from 'react-native';
 export default function Home() {
     const { t } = useTranslation();
     const [account, setAccount] = useState(0);
@@ -25,23 +26,32 @@ export default function Home() {
             backgroundColor: '#FD767E',
             title: t('common:company'),
             numberStatistic: 0,
-            icon: <FontAwesome5 name="file-invoice" size={24} color="black" />,
+            icon: <FontAwesome5 name="building" size={24} color="black" />,
         },
         {
             id: 3,
             backgroundColor: '#58DB4D',
             title: t('common:invoice'),
             numberStatistic: 0,
-            icon: <MaterialCommunityIcons name="calendar-month" size={24} color="black" />,
+            icon: <FontAwesome5 name="file-invoice" size={24} color="black" />,
         },
         {
             id: 4,
             backgroundColor: '#EAEC73',
-            title: t('common:invoiceMonth'),
+            title: t('common:contact'),
             numberStatistic: 0,
             icon: <MaterialCommunityIcons name="calendar-month" size={24} color="black" />,
         },
     ]);
+    const [chartData, setChartData] = useState({
+        labels: [t('common:account'), t('common:company'), t('common:invoice')],
+        datasets: [
+            {
+                data: [0, 0, 0], // Initial values, you can update these after fetching data
+            },
+        ],
+    });
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -49,27 +59,38 @@ export default function Home() {
                 const userData = await getAllUser1(10000, page);
                 const company = await getAllCompanies1(10000, page);
                 const invoices = await getAllInvoice1(10000, page);
-                // const products = await getAllProduct1(10000, page);
-
+                const contact = await getAllInvoice1(10000, page);
+                const companyData = company.length;
+                const invoicesData = invoices.length;
                 const updatedItem = item.map((statistic) => {
                     if (statistic.title === t('common:account')) {
                         return { ...statistic, numberStatistic: userData.length };
                     }
                     if (statistic.title === t('common:company')) {
-                        return { ...statistic, numberStatistic: company.length };
+                        return { ...statistic, numberStatistic: companyData };
                     }
                     if (statistic.title === t('common:invoice')) {
-                        return { ...statistic, numberStatistic: invoices.length };
+                        return { ...statistic, numberStatistic: invoicesData };
                     }
-                    // if (statistic.title === t('common:invoiceMonth')) {
-                    //     // You need to calculate the month's length based on your business logic
-                    //     return { ...statistic, numberStatistic: /* calculated length */ };
-                    // }
+                    if (statistic.title === t('common:contact')) {
+                        return { ...statistic, numberStatistic: contact.length };
+                    }
 
                     return statistic;
                 });
 
                 setItem(updatedItem);
+
+                const updatedChartData = {
+                    labels: [t('common:account'), t('common:company'), t('common:invoice')],
+                    datasets: [
+                        {
+                            data: [userData.length, companyData, invoicesData],
+                        },
+                    ],
+                };
+
+                setChartData(updatedChartData);
             } catch (error) {
                 console.error('Error fetching data:', error);
             } finally {
@@ -81,6 +102,7 @@ export default function Home() {
     }, [t]);
     return (
         <View style={styles.container}>
+            {/* <Loading loading={loading} isFullScreen /> */}
             <View style={styles.container_top}>
                 <View style={styles.container_top_statistic}>
                     <FlatList
@@ -105,40 +127,36 @@ export default function Home() {
                 <View style={styles.container_center1}>
                     <View style={styles.center_left}>
                         <Text style={styles.text}>{t('common:overview')}</Text>
-                        <Text style={{ marginVertical: 10, fontSize: 18 }}>1/2/2023</Text>
-                    </View>
-                    <View style={styles.center_right}>
-                        <View style={styles.center_right1}>
-                            <Button
-                                text={t('common:day')}
-                                customStylesBtn={styles.btn}
-                                customStylesText={styles.btnText}
-                            />
-                            <Button
-                                text={t('common:month')}
-                                customStylesBtn={styles.btn}
-                                customStylesText={styles.btnText}
-                            />
-                            <Button
-                                text={t('common:year')}
-                                customStylesBtn={[styles.btn]}
-                                customStylesText={styles.btnText}
-                            />
-                        </View>
-                        <AntDesign
-                            name="clouddownloado"
-                            size={24}
-                            color="black"
-                            style={{ backgroundColor: '#35B0E5', borderRadius: 20, paddingHorizontal: 4 }}
-                        />
                     </View>
                 </View>
-                <View style={styles.container_center2}>
-                    <Image
-                        source={{
-                            uri: 'https://news.meeycdn.net/zoom/480x0/uploads/images/2022/08/26/cach-ve-bieu-do-line-trong-excel-1-1661526357.jpg',
+                <View style={{ justifyContent: 'center', marginHorizontal: -20 }}>
+                    <LineChart
+                        data={chartData}
+                        width={Dimensions.get('window').width - 16}
+                        height={220}
+                        yAxisLabel=""
+                        yAxisSuffix=""
+                        chartConfig={{
+                            backgroundColor: '#ffffff',
+                            backgroundGradientFrom: '#ffffff',
+                            backgroundGradientTo: '#ffffff',
+                            decimalPlaces: 0,
+                            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                            style: {
+                                borderRadius: 16,
+                            },
+                            propsForDots: {
+                                r: '6',
+                                strokeWidth: '2',
+                                stroke: '#ffa726',
+                            },
                         }}
-                        style={{ width: '100%', height: 300 }}
+                        bezier
+                        style={{
+                            marginVertical: 8,
+                            borderRadius: 16,
+                        }}
                     />
                 </View>
             </View>
