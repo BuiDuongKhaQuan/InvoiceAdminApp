@@ -102,4 +102,5 @@ export default {
     deleteAcc: 'The account has been deleted before',
     description: 'Description',
     noAccess: 'You do not have access!!!',
+    contact: 'Contact',
 };

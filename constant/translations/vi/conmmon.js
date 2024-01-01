@@ -97,4 +97,5 @@ export default {
     deleteAcc: 'Tài khoản đã được xóa trước đó',
     description: 'Mô tả',
     noAccess: 'Bạn không có quyền truy cập',
+    contact: 'Liên hệ',
 };

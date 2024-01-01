@@ -10,6 +10,8 @@ import { getCompaniesById, login } from '../Service/api';
 import { useUserContext } from './UserContext'; // Đảm bảo thay đổi đường dẫn đúng
 import Loading from '../components/Loading';
 import { useTranslation } from 'react-i18next';
+import { textColor } from '../constant/color';
+import { statusBarHeight } from '../constant/dimistion';
 
 export default function Login({ navigation }) {
     const { t } = useTranslation();
@@ -86,7 +88,7 @@ export default function Login({ navigation }) {
                 <Loading loading={loading} />
                 <View style={styles.container_top}>
                     <Image style={styles.logo} source={require('../assets/images/logo.png')} />
-                    <Text style={styles.title}>Invoice C</Text>
+                    {/* <Text style={styles.title}>Invoice C</Text> */}
                 </View>
                 <View style={centerStyle}>
                     <Input
@@ -134,8 +136,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     logo: {
-        width: 200,
-        height: 200,
+        marginTop: statusBarHeight,
+        width: 400,
+        height: 400,
     },
     title: {
         fontSize: 70,
@@ -165,9 +168,9 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
     },
     forgot: {
-        marginBottom: 20,
+        marginVertical: 20,
         fontSize: fontSizeDefault,
-        color: '#26B819',
+        color: textColor,
         fontWeight: 'bold',
     },
 });
