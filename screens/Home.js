@@ -2,53 +2,90 @@ import { StyleSheet, Text, View, FlatList, Image } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { MaterialCommunityIcons, FontAwesome5, AntDesign } from '@expo/vector-icons';
 import Button from '../components/Button';
-import { getAllCompanies, getAllInvoice, getAllProduct, getAllUser } from '../Service/api';
+import { getAllCompanies1, getAllInvoice1, getAllUser1 } from '../Service/api';
 import { useTranslation } from 'react-i18next';
+import Loading from '../components/Loading';
 
 export default function Home() {
     const { t } = useTranslation();
     const [account, setAccount] = useState(0);
     const [invoices, setINvoices] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(1);
     const [item, setItem] = useState([
         {
             id: 1,
             backgroundColor: '#78AEFF',
             title: t('common:account'),
-            numberStatistic: 20,
+            numberStatistic: 0,
             icon: <MaterialCommunityIcons name="account-group" size={24} color="black" />,
         },
         {
             id: 2,
             backgroundColor: '#FD767E',
-            title: t('common:invoice'),
-            numberStatistic: 50,
+            title: t('common:company'),
+            numberStatistic: 0,
             icon: <FontAwesome5 name="file-invoice" size={24} color="black" />,
         },
         {
             id: 3,
             backgroundColor: '#58DB4D',
-            title: t('common:invoiceWeek'),
-            numberStatistic: 50,
+            title: t('common:invoice'),
+            numberStatistic: 0,
             icon: <MaterialCommunityIcons name="calendar-month" size={24} color="black" />,
         },
         {
             id: 4,
             backgroundColor: '#EAEC73',
             title: t('common:invoiceMonth'),
-            numberStatistic: 50,
+            numberStatistic: 0,
             icon: <MaterialCommunityIcons name="calendar-month" size={24} color="black" />,
         },
     ]);
-    const imageUrl =
-        'https://www.google.com/url?sa=i&url=https%3A%2F%2Fmeeyland.com%2Fdau-tu%2Fhuong-dan-cach-ve-bieu-do-duong-trong-excel-nhanh-chong%2F&psig=AOvVaw3quS0hbMzKcu7k_8UZ0u_2&ust=1695388239055000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCOiU3cDju4EDFQAAAAAdAAAAABAE'; // Thay đổi đường dẫn tới hình ảnh của bạn
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                const userData = await getAllUser1(10000, page);
+                const company = await getAllCompanies1(10000, page);
+                const invoices = await getAllInvoice1(10000, page);
+                // const products = await getAllProduct1(10000, page);
 
+                const updatedItem = item.map((statistic) => {
+                    if (statistic.title === t('common:account')) {
+                        return { ...statistic, numberStatistic: userData.length };
+                    }
+                    if (statistic.title === t('common:company')) {
+                        return { ...statistic, numberStatistic: company.length };
+                    }
+                    if (statistic.title === t('common:invoice')) {
+                        return { ...statistic, numberStatistic: invoices.length };
+                    }
+                    // if (statistic.title === t('common:invoiceMonth')) {
+                    //     // You need to calculate the month's length based on your business logic
+                    //     return { ...statistic, numberStatistic: /* calculated length */ };
+                    // }
+
+                    return statistic;
+                });
+
+                setItem(updatedItem);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [t]);
     return (
         <View style={styles.container}>
             <View style={styles.container_top}>
                 <View style={styles.container_top_statistic}>
                     <FlatList
                         data={item}
-                        numColumns={2} // Use a number instead of a string
+                        numColumns={2}
                         renderItem={({ item }) => (
                             <View style={[styles.itemContainer, { backgroundColor: item.backgroundColor }]}>
                                 <View style={styles.items}>
@@ -58,7 +95,7 @@ export default function Home() {
                                 </View>
                             </View>
                         )}
-                        keyExtractor={(item) => item.id}
+                        keyExtractor={(item) => item.id.toString()} // Update this line
                         contentContainerStyle={styles.flatListContent}
                         style={styles.flatList}
                     />
