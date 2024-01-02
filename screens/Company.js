@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Button from '../components/Button';
 import Input from '../components/Input';
-import { AntDesign, Feather, Ionicons, FontAwesome5, Foundation, Entypo, FontAwesome } from '@expo/vector-icons';
+import { AntDesign, Feather, Ionicons, Foundation, Entypo, FontAwesome } from '@expo/vector-icons';
 import { Row, Rows, Table, TableWrapper } from 'react-native-reanimated-table';
 import { getAllCompanies, getCompaniesByName, getCompaniesByStatus } from '../Service/api';
 import { exportExcel } from '../utilies/export';
@@ -10,6 +10,7 @@ import Popup from '../components/Popup/company';
 import Loading from '../components/Loading';
 import SelectDropdown from 'react-native-select-dropdown';
 import { useTranslation } from 'react-i18next';
+
 export default function Company() {
     const { t } = useTranslation();
     const [dataPopup, setDataPopup] = useState();
@@ -46,6 +47,22 @@ export default function Company() {
         };
         companys();
     }, []);
+
+    useEffect(() => {
+        const companys = async () => {
+            setLoading(true);
+            try {
+                const data = await getAllCompanies();
+                setCompanys(data);
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        companys();
+    }, [visible == false]);
+
     const handleFilter = async (status) => {
         setLoading(true);
         try {
@@ -116,7 +133,7 @@ export default function Company() {
             {dataPopup && <Popup visible={visible} onClose={() => setVisible(false)} data={dataPopup} />}
             <Popup visible={visibleCreate} onClose={() => setVisibleCreate(false)} create />
             <Input
-                holder={t('common:search')}
+                holder={t('common:search Tìm kiếm theo tên công ty')}
                 iconLeft={<Feather name="search" size={21} color="black" />}
                 iconRight={<Ionicons name="ios-qr-code-outline" size={21} color="black" />}
                 customStylesContainer={{

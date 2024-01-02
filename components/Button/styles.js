@@ -1,13 +1,13 @@
 import { StyleSheet } from 'react-native';
-import { white } from '../../constant/color';
+import { buttonColor, white } from '../../constant/color';
 
 export const styles = StyleSheet.create({
     btn: {
-        width: '90%',
+        width: '100%',
         height: 50,
-        borderRadius: 15,
+        borderRadius: 7,
         borderWidth: 1,
-        backgroundColor: '#0056ff',
+        backgroundColor: buttonColor,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',

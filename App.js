@@ -19,10 +19,10 @@ export default function App() {
                 <Stack.Navigator initialRouteName="Login">
                     <Stack.Screen name="Login" component={Login} options={headerNone} />
                     <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={headerNone} />
-                    <Stack.Screen name="Drawer" component={DrawerNavigation} options={{ headerShown: false }} />
-                    <Stack.Screen name="ChangePassword" component={ChangePassword} options={{ headerShown: false }} />
-                    <Stack.Screen name="Language" component={Language} options={{ headerShown: false }} />
-                    <Stack.Screen name="Notification" component={Notification} options={{ headerShown: false }} />
+                    <Stack.Screen name="Drawer" component={DrawerNavigation} options={headerNone} />
+                    <Stack.Screen name="ChangePassword" component={ChangePassword} options={headerNone} />
+                    <Stack.Screen name="Language" component={Language} options={headerNone} />
+                    <Stack.Screen name="Notification" component={Notification} options={headerNone} />
                 </Stack.Navigator>
             </NavigationContainer>
         </UserProvider>

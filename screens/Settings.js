@@ -42,19 +42,6 @@ export default function Setting() {
                 }}
                 keyExtractor={(item) => item.id}
             />
-            <View style={styles.logoutContainer}>
-                <Button
-                    iconLeft={<SimpleLineIcons name="logout" size={24} color="black" />}
-                    customStylesBtn={styles.logout_btn}
-                    onPress={() => {
-                        dispatch({
-                            type: 'SIGN_OUT',
-                        });
-                        navigation.navigate('Login');
-                    }}
-                    text={t('common:logout')}
-                />
-            </View>
         </View>
     );
 }

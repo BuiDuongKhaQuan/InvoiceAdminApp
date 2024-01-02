@@ -320,6 +320,7 @@ const styles = StyleSheet.create({
     input_item: {
         flex: 1,
         marginBottom: 15,
+        marginRight: 10,
         alignItems: 'flex-start',
         justifyContent: 'center',
     },
@@ -333,6 +334,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         elevation: 1,
         height: 30,
+        marginRight: 10,
     },
     center: {
         flex: 1,

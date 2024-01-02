@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Keyboard, Alert } from 'react-native';
+import { StyleSheet, Text, View, Image, Keyboard, Alert, ScrollView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Input from '../components/Input';
 import Button from '../components/Button';
@@ -12,6 +12,7 @@ import Loading from '../components/Loading';
 import { useTranslation } from 'react-i18next';
 import { textColor } from '../constant/color';
 import { statusBarHeight } from '../constant/dimistion';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default function Login({ navigation }) {
     const { t } = useTranslation();
@@ -83,14 +84,13 @@ export default function Login({ navigation }) {
     };
 
     return (
-        <View style={styles.container}>
-            <BackgroundImage>
-                <Loading loading={loading} />
+        <BackgroundImage>
+            <ScrollView style={styles.container}>
+                <Loading loading={loading} isFullScreen />
                 <View style={styles.container_top}>
                     <Image style={styles.logo} source={require('../assets/images/logo.png')} />
-                    {/* <Text style={styles.title}>Invoice C</Text> */}
                 </View>
-                <View style={centerStyle}>
+                <View style={styles.container_center}>
                     <Input
                         onChangeText={handleChangeEmail}
                         value={email}
@@ -102,30 +102,25 @@ export default function Login({ navigation }) {
                     <Input
                         onChangeText={handleChangePass}
                         value={pass}
-                        validate={errorPass}
-                        validateText={t('common:format')}
                         pass
                         holder={t('common:password')}
                         iconLeft={<Ionicons name="lock-closed-outline" size={24} color="black" />}
                     />
 
-                    {keyboardIsShow || <Button onPress={handlePress} text={t('common:login')} />}
-                </View>
-                {keyboardIsShow || (
-                    <View style={styles.container_botom}>
-                        <Text onPress={() => navigation.navigate('ForgotPassword')} style={styles.forgot}>
-                            {t('common:forgotPass')}?
-                        </Text>
+                    <View style={styles.view_login}>
+                        <View style={styles.btn_login}>
+                            <Button onPress={handlePress} text={t('common:login')} />
+                        </View>
                     </View>
-                )}
-            </BackgroundImage>
-        </View>
+                </View>
+            </ScrollView>
+        </BackgroundImage>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        marginHorizontal: 10,
     },
     image: {
         flex: 1,
@@ -140,15 +135,20 @@ const styles = StyleSheet.create({
         width: 400,
         height: 400,
     },
-    title: {
-        fontSize: 70,
-        color: '#B3B70A',
-        textShadowColor: '#2AA50B',
-        textShadowRadius: 5,
-        textShadowOffset: { width: 2, height: 2 },
-    },
     container_center: {
         flex: 4,
+        alignItems: 'center',
+    },
+    view_login: {
+        width: '100%',
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    btn_login: {
+        flex: 1,
+    },
+    fingerprint: {
+        flex: 0.18,
         alignItems: 'center',
     },
     register: {
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     register_btn: {
         fontSize: fontSizeDefault,
         fontWeight: '700',
-        color: '#26B819',
+        color: textColor,
     },
     container_botom: {
         flex: 1,
