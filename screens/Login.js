@@ -16,26 +16,12 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default function Login({ navigation }) {
     const { t } = useTranslation();
-    const [keyboardIsShow, setKeyboardIsShow] = useState(false);
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
     const [errorEmail, setErrorEmail] = useState(false);
     const [errorPass, setErrorPass] = useState(false);
     const { dispatch } = useUserContext();
     const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-        Keyboard.addListener('keyboardDidShow', () => {
-            setKeyboardIsShow(true);
-        });
-        Keyboard.addListener('keyboardDidHide', () => {
-            setKeyboardIsShow(false);
-        });
-    });
-
-    const centerStyle = keyboardIsShow
-        ? { ...styles.container_center, flex: 2, justifyContent: 'center' }
-        : { ...styles.container_center };
 
     const isValidateLogin = () => email.length > 0 && pass.length > 0 && errorEmail == false && errorPass == false;
 
