@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Button from '../components/Button';
 import Input from '../components/Input';
@@ -33,16 +33,21 @@ export default function Company() {
         invoices();
     }, []);
     const handleExportExcel = async () => await exportExcel(invoices, 'Invoices');
-    const handleDelete = async (id) => {
+    const handleDelete = async (data) => {
         try {
-            await deleteInvoiceById(id.id);
+            setLoading(true);
+            await deleteInvoiceById(data.id);
+            const updatedInvoices = invoices.filter((invoice) => invoice.id !== data.id);
+            setInvoices(updatedInvoices);
         } catch (error) {
             console.log(error.response);
+        } finally {
+            setLoading(false);
         }
     };
     const handleFilter = async (name) => {
-        setLoading(true);
         try {
+            setLoading(true);
             const response = await getInvoiceByCompanyName(name);
             const data = response;
             setInvoices(data);
@@ -54,16 +59,19 @@ export default function Company() {
     };
     const handleSearch = async () => {
         try {
+            setLoading(true);
             const response = await getInvoiceByCompanyName(nameSearch);
             const data = response;
             setInvoices(data);
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoading(false);
         }
     };
-    const ActionButton = (id) => (
+    const ActionButton = ({ data }) => (
         <View style={styles.action}>
-            <TouchableOpacity onPress={() => handleDelete(id)}>
+            <TouchableOpacity onPress={() => handleDelete(data)}>
                 <AntDesign name="delete" size={17} color="orange" />
             </TouchableOpacity>
         </View>
@@ -75,14 +83,14 @@ export default function Company() {
             invoice.id,
             invoice.companyName,
             invoice.emailUser,
-            <ActionButton id={invoice.id} />,
+            <ActionButton data={invoice} />,
         ]);
 
     return (
         <View style={styles.container}>
             <Loading loading={loading} />
             <Input
-                holder={t('common:search')}
+                holder={t('common:search Tìm kiếm theo tên công ty')}
                 iconLeft={<Feather name="search" size={21} color="black" />}
                 iconRight={<Ionicons name="ios-qr-code-outline" size={21} color="black" />}
                 customStylesContainer={{

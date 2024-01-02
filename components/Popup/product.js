@@ -10,7 +10,7 @@ import * as ImagePicker from 'expo-image-picker';
 import Loading from '../Loading';
 import { useTranslation } from 'react-i18next';
 
-export default function Popup({ visible, onClose, data, create }) {
+export default function Popup({ visible, onClose, data }) {
     const { t } = useTranslation();
     const [product, setProduct] = useState(data);
     const [image, setImage] = useState(null);
@@ -29,36 +29,24 @@ export default function Popup({ visible, onClose, data, create }) {
             setKeyboardIsShow(false);
         });
     });
-    const handleSelectedLogo = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            allowsEditing: true,
-            aspect: [3, 3],
-            quality: 1,
-        });
-
-        if (result.canceled) {
-            return;
-        }
-        setImage(result.assets[0].uri);
-    };
 
     const handleDelete = async () => {
-        setLoading(true);
-        try {
-            const response = await deleteCompany(data.id);
-            setProduct(response);
-            console.log(response);
-        } catch (error) {
-            console.error(' error:', error.response);
-        } finally {
-            setLoading(false);
-        }
+        // setLoading(true);
+        // try {
+        //     const response = await deleteCompany(data.id);
+        //     setProduct(response);
+        //     console.log(response);
+        // } catch (error) {
+        //     console.error(' error:', error.response);
+        // } finally {
+        //     setLoading(false);
+        // }
     };
 
     const handlerSend = async () => {
         setLoading(true);
         try {
-            const response = await updateProduct(data.id, name, '1', price, description, '1', image);
+            const response = await updateProduct(data.id, name, '1', price, description, '1');
             setProduct(response);
         } catch (error) {
             console.error(' error:', error.response.data.message);
@@ -66,32 +54,7 @@ export default function Popup({ visible, onClose, data, create }) {
             setLoading(false);
         }
     };
-    const handleCreate = async () => {
-        setLoading(true);
-        try {
-            const response = await createCompany(name, image, '1', price, address, description);
-            console.log(data.id);
-            setProduct(response);
-        } catch (error) {
-            console.error(' error:', error.response);
-        } finally {
-            setLoading(false);
-        }
-    };
 
-    const newLogo = () => {
-        if (data) {
-            if (image == null) {
-                return { uri: data.listImage[0] };
-            }
-            if (image != null) {
-                return { uri: image };
-            }
-            if (data.listImage[0] == null) {
-                return require('../../assets/images/default-avatar.png');
-            }
-        }
-    };
     return (
         <Modal animationType="slide" transparent={true} visible={visible} onRequestClose={onClose}>
             <View style={newStyle}>
@@ -110,38 +73,40 @@ export default function Popup({ visible, onClose, data, create }) {
                         </TouchableOpacity>
                     </View>
                     <View style={styles.content}>
-                        <View style={styles.avartar}>
-                            <TouchableOpacity onPress={handleSelectedLogo}>
-                                <Image source={newLogo()} style={styles.img} />
-                            </TouchableOpacity>
-                        </View>
                         <View style={styles.information}>
                             <View style={styles.input_item}>
                                 <Text style={styles.title}>{t('common:name')}</Text>
-                                <Input
-                                    value={name}
-                                    onChangeText={(name) => setName(name)}
-                                    customStylesContainer={styles.input}
-                                    holder={data ? data.name : 'common:enterName'}
-                                />
+                                <View style={styles.container_input}>
+                                    <Input
+                                        value={name}
+                                        onChangeText={(name) => setName(name)}
+                                        customStylesContainer={styles.input}
+                                        holder={data ? data.name : 'common:enterName'}
+                                    />
+                                </View>
                             </View>
                             <View style={styles.input_item}>
                                 <Text style={styles.title}>{t('common:price')}</Text>
-                                <Input
-                                    value={price}
-                                    onChangeText={(price) => setPrice(price)}
-                                    customStylesContainer={styles.input}
-                                    holder={data ? data.price.toString() : 'common:enterValue'}
-                                />
+                                <View style={styles.container_input}>
+                                    <Input
+                                        value={price}
+                                        onChangeText={(price) => setPrice(price)}
+                                        customStylesContainer={styles.input}
+                                        holder={data ? data.price.toString() : 'common:enterValue'}
+                                    />
+                                </View>
                             </View>
+
                             <View style={styles.input_item}>
                                 <Text style={styles.title}>{t('common:description')}</Text>
-                                <Input
-                                    value={description}
-                                    onChangeText={(description) => setDesciption(description)}
-                                    customStylesContainer={styles.input}
-                                    holder={data ? data.description : 'common:enterValue'}
-                                />
+                                <View style={styles.container_input}>
+                                    <Input
+                                        value={description}
+                                        onChangeText={(description) => setDesciption(description)}
+                                        customStylesContainer={styles.input}
+                                        holder={data ? data.description : 'common:enterValue'}
+                                    />
+                                </View>
                             </View>
                         </View>
                     </View>
@@ -149,7 +114,7 @@ export default function Popup({ visible, onClose, data, create }) {
 
                 <View style={styles.bottom}>
                     <Button
-                        onPress={create ? handleCreate : handlerSend}
+                        onPress={handlerSend}
                         customStylesText={styles.text}
                         customStylesBtn={styles.btn}
                         text={t('common:saveChanges')}
@@ -231,19 +196,27 @@ const styles = StyleSheet.create({
     input_item: {
         flex: 1,
         marginBottom: 10,
-        alignItems: 'flex-start',
+        marginHorizontal: 10,
         justifyContent: 'center',
     },
     title: {
         fontSize: fontSizeDefault,
         fontWeight: 'bold',
     },
+    container_input: {
+        flex: 1,
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     input: {
         borderRadius: 5,
         borderColor: 'gray',
         borderWidth: 1,
         elevation: 1,
-        height: 35,
+        paddingLeft: 5,
+        height: '60%',
+        width: '95%',
     },
     center: {
         flex: 1,

@@ -105,7 +105,7 @@ export default function Company() {
             <Loading loading={loading} />
             {dataPopup && <Popup visible={visible} onClose={() => setVisible(false)} data={dataPopup} />}
             <Input
-                holder={t('common:search')}
+                holder={t('common:search tìm kiếm theo email')}
                 iconLeft={<Feather name="search" size={21} color="black" />}
                 iconRight={<Ionicons name="ios-qr-code-outline" size={21} color="black" />}
                 customStylesContainer={{

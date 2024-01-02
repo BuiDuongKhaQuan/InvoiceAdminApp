@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const instance = axios.create({
     // baseURL: 'http://bill-rest.ap-southeast-2.elasticbeanstalk.com/api',
-    baseURL: 'http://192.168.1.6:8080/api',
+    baseURL: 'http://192.168.1.106:8080/api',
 });
 
 // Auth
@@ -299,7 +299,7 @@ export const createCompany = async (name, logo, status, email, address, phone) =
 //invoice
 export const invoices = async (emailUser, emailGuest, note, isPaid, listOrders, method, companyName, key, qrImage) => {
     try {
-        const response = await instance.post('v1/invoices', {
+        const response = await instance.post('/v1/invoices', {
             emailUser,
             emailGuest,
             note,
@@ -343,7 +343,8 @@ export const getInvoiceByCompanyName = async (name) => {
 export const deleteInvoiceById = async (id) => {
     console.log(id);
     try {
-        const response = await axios.delete(`http://192.168.1.85:8080/api/v1/invoices/${id}`);
+        const response = await instance.delete(`/v1/invoices/${id}`);
+        console.log(response.data);
         return response.data;
     } catch (error) {
         throw error;
@@ -353,7 +354,7 @@ export const deleteInvoiceById = async (id) => {
 //products
 export const products = async (name, status, price, listImageFile, companyName, description, type) => {
     try {
-        const response = await instance.post('v1/products', {
+        const response = await instance.post('/v1/products', {
             name,
             status,
             price,
@@ -383,7 +384,7 @@ export const getProductByName = async (name) => {
         throw error;
     }
 };
-export const updateProduct = async (id, name, status, price, description, type, images) => {
+export const updateProduct = async (id, name, status, price, description, type) => {
     let formData = new FormData();
     formData.append('id', id);
     formData.append('name', name);
@@ -391,18 +392,6 @@ export const updateProduct = async (id, name, status, price, description, type, 
     formData.append('price', price);
     formData.append('description', description);
     formData.append('type', type);
-    if (images && images.length > 0) {
-        images.forEach((image, index) => {
-            let filename = image.split('/').pop();
-            let match = /\.(\w+)$/.exec(filename);
-            let type = match ? `image/${match[1]}` : `image`;
-            formData.append(`listImageFile[${index}]`, {
-                uri: image,
-                name: filename,
-                type,
-            });
-        });
-    }
     console.log(formData);
     try {
         const response = await instance.patch('/v1/products', formData, {
