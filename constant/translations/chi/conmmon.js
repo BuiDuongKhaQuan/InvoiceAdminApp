@@ -5,6 +5,7 @@ export default {
     password: '密码',
     notification: '通知',
     logout: '注销',
+    application: '应用程序 ',
 
     information: '信息',
     changeAvt: '更改头像',
@@ -16,6 +17,13 @@ export default {
     male: '男',
     female: '女',
     save: '保存',
+    alert_no: '不',
+    alert_yes: '同意',
+    alert_lan: '您确定要更改语言吗？',
+    searchProduct: '根据产品名称搜索',
+    searchBill: '按账单ID搜索',
+    searchCompany: '按公司名称搜索',
+    searchUser: '按用户名搜索',
 
     changePassword: '更改密码',
     oldPass: '旧密码',

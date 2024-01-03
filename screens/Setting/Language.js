@@ -48,7 +48,6 @@ export default function Language() {
                     text: t('common:alert_yes'),
                     onPress: () => {
                         setLanguage(code);
-                        navigation.navigate('TabNavigator');
                     },
                     cancelable: true,
                 },

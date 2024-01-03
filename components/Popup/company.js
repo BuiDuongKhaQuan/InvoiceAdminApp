@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Modal, TouchableOpacity, Image, Keyboard, Alert } from 'react-native';
+import { StyleSheet, Text, View, Modal, TouchableOpacity, Image, Keyboard, Alert, ScrollView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Button from '../Button';
 import { white } from '../../constant/color';
@@ -13,10 +13,10 @@ import { useTranslation } from 'react-i18next';
 export default function Popup({ visible, onClose, data, create }) {
     const { t } = useTranslation();
     const [company, setCompany] = useState(data);
-    const [name, setName] = useState();
-    const [email, setEmail] = useState();
-    const [phone, setPhone] = useState();
-    const [address, setAddress] = useState();
+    const [name, setName] = useState(data ? company.name : '');
+    const [email, setEmail] = useState(data ? company.email : '');
+    const [phone, setPhone] = useState(data ? company.phone : '');
+    const [address, setAddress] = useState(data ? company.address : '');
     const [loading, setLoading] = useState(false);
     const [logo, setLogo] = useState(null);
     const [keyboardIsShow, setKeyboardIsShow] = useState(false);
@@ -47,9 +47,9 @@ export default function Popup({ visible, onClose, data, create }) {
         setLoading(true);
         try {
             await updateCompany(data.id, name, logo, '1', email, address, phone);
-            Alert.alert('', 'Successfully Restore');
+            Alert.alert('', t('common:success'));
         } catch (error) {
-            Alert.alert('', 'Error while restoring');
+            Alert.alert('', t('common:error'));
         } finally {
             setLoading(false);
         }
@@ -58,9 +58,9 @@ export default function Popup({ visible, onClose, data, create }) {
         setLoading(true);
         try {
             await deleteCompany(data.id);
-            Alert.alert('', 'Successfully Delete');
+            Alert.alert('', t('common:success'));
         } catch (error) {
-            Alert.alert('', 'Error while deleting');
+            Alert.alert('', t('common:error'));
         } finally {
             setLoading(false);
         }
@@ -71,10 +71,10 @@ export default function Popup({ visible, onClose, data, create }) {
         try {
             const response = await updateCompany(data.id, name, logo, '1', email, address, phone);
             setCompany(response);
+            Alert.alert(t('common:notification'), t('common:success'));
         } catch (error) {
-            console.error(' error:', error.response);
+            console.error(' error:', error.response.data);
         } finally {
-            setLogo(null);
             setLoading(false);
         }
     };
@@ -83,6 +83,7 @@ export default function Popup({ visible, onClose, data, create }) {
         try {
             const response = await createCompany(name, logo, '1', email, address, phone);
             setCompany(response);
+            Alert.alert(t('common:notification'), t('common:success'));
         } catch (error) {
             console.error(' error:', error.response.data);
         } finally {
@@ -105,8 +106,8 @@ export default function Popup({ visible, onClose, data, create }) {
     return (
         <Modal animationType="slide" transparent={true} visible={visible} onRequestClose={onClose}>
             <View style={newStyle}>
-                <Loading loading={loading} />
-                <View style={styles.top}>
+                <Loading loading={loading} isFullScreen />
+                <ScrollView style={{ width: '100%' }}>
                     <View style={styles.header}>
                         <View style={styles.header_item}></View>
                         <View style={styles.header_item}>
@@ -119,71 +120,68 @@ export default function Popup({ visible, onClose, data, create }) {
                             <AntDesign name="close" size={24} color="black" />
                         </TouchableOpacity>
                     </View>
-                    <View style={styles.content}>
-                        <View style={styles.avartar}>
-                            <TouchableOpacity onPress={handleSelectedLogo}>
-                                <Image source={newLogo()} style={styles.img} />
-                            </TouchableOpacity>
-                            <Text style={styles.text}>{data ? data.name : t('common:enterValue')}</Text>
+                    <View style={styles.avartar}>
+                        <TouchableOpacity onPress={handleSelectedLogo}>
+                            <Image source={newLogo()} style={styles.img} />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.center}>
+                        <View style={styles.input_item}>
+                            <Text style={styles.title}>{t('common:name')}</Text>
+                            <Input
+                                value={name}
+                                onChangeText={(name) => setName(name)}
+                                customStylesContainer={styles.input}
+                                holder={data ? data.name : t('common:enterValue')}
+                            />
                         </View>
-                        <View style={styles.information}>
-                            <View style={styles.input_item}>
-                                <Text style={styles.title}>{t('common:name')}</Text>
-                                <Input
-                                    value={name}
-                                    onChangeText={(name) => setName(name)}
-                                    customStylesContainer={styles.input}
-                                    holder={data ? data.name : t('common:enterValue')}
-                                />
-                            </View>
-                            <View style={styles.input_item}>
-                                <Text style={styles.title}>Email</Text>
-                                <Input
-                                    value={email}
-                                    onChangeText={(email) => setEmail(email)}
-                                    customStylesContainer={styles.input}
-                                    holder={data ? data.email : t('common:enterValue')}
-                                />
-                            </View>
-                            <View style={styles.input_item}>
-                                <Text style={styles.title}>{t('common:address')}</Text>
-                                <Input
-                                    value={address}
-                                    onChangeText={(address) => setAddress(address)}
-                                    customStylesContainer={styles.input}
-                                    holder={data ? data.address : 'Enter value'}
-                                />
-                            </View>
-                            <View style={styles.input_item}>
-                                <Text style={styles.title}>{t('common:phone')}</Text>
-                                <Input
-                                    value={phone}
-                                    onChangeText={(phone) => setPhone(phone)}
-                                    customStylesContainer={styles.input}
-                                    holder={data ? data.phone : t('common:address')}
-                                />
-                            </View>
+                        <View style={styles.input_item}>
+                            <Text style={styles.title}>Email</Text>
+                            <Input
+                                value={email}
+                                onChangeText={(email) => setEmail(email)}
+                                customStylesContainer={styles.input}
+                                holder={data ? data.email : t('common:enterValue')}
+                            />
+                        </View>
+                        <View style={styles.input_item}>
+                            <Text style={styles.title}>{t('common:address')}</Text>
+                            <Input
+                                value={address}
+                                onChangeText={(address) => setAddress(address)}
+                                customStylesContainer={styles.input}
+                                holder={data ? data.address : 'Enter value'}
+                            />
+                        </View>
+                        <View style={styles.input_item}>
+                            <Text style={styles.title}>{t('common:phone')}</Text>
+                            <Input
+                                value={phone}
+                                onChangeText={(phone) => setPhone(phone)}
+                                customStylesContainer={styles.input}
+                                holder={data ? data.phone : t('common:address')}
+                            />
                         </View>
                     </View>
-                </View>
 
-                <View style={styles.bottom}>
-                    <Button
-                        onPress={create ? handleCreate : handlerSend}
-                        customStylesText={styles.text}
-                        customStylesBtn={styles.btn}
-                        text={data ? t('common:saveChanges') : t('common:create')}
-                    />
-
-                    {data && (
+                    <View style={styles.bottom}>
                         <Button
-                            onPress={data.status == 1 ? handleDelete : handleRestore}
+                            onPress={create ? handleCreate : handlerSend}
                             customStylesText={styles.text}
                             customStylesBtn={styles.btn}
-                            text={data.status == 1 ? t('common:delete') : t('common:restore')}
+                            text={data ? t('common:saveChanges') : t('common:create')}
                         />
-                    )}
-                </View>
+
+                        {data && (
+                            <Button
+                                onPress={data.status == 1 ? handleDelete : handleRestore}
+                                customStylesText={styles.text}
+                                customStylesBtn={styles.btn}
+                                text={data.status == 1 ? t('common:delete') : t('common:restore')}
+                            />
+                        )}
+                    </View>
+                </ScrollView>
             </View>
         </Modal>
     );
@@ -193,7 +191,7 @@ const styles = StyleSheet.create({
     container: {
         position: 'absolute',
         bottom: 0,
-        height: '50%',
+        height: 'auto',
         width: '100%',
         alignItems: 'center',
         flexDirection: 'column',
@@ -204,9 +202,6 @@ const styles = StyleSheet.create({
         borderTopWidth: 1,
         borderLeftWidth: 1,
         borderRightWidth: 1,
-    },
-    top: {
-        flex: 2,
     },
     header: {
         flexDirection: 'row',
@@ -224,16 +219,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    content: {
-        flex: 1,
-        width: '100%',
-        flexDirection: 'row',
-    },
     avartar: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        // marginHorizontal: 10,
+        marginVertical: 10,
     },
     img: {
         resizeMode: 'stretch',
@@ -243,34 +233,36 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'gray',
     },
+
     text: {
         fontSize: fontSizeDefault,
         textAlign: 'center',
     },
-    information: {
-        flex: 1,
-        marginTop: 10,
-    },
+
     input_item: {
         flex: 1,
-        marginBottom: 10,
-        alignItems: 'flex-start',
+        width: '100%',
+        alignItems: 'center',
         justifyContent: 'center',
     },
     title: {
         fontSize: fontSizeDefault,
         fontWeight: 'bold',
+        textAlign: 'left',
+        marginLeft: 10,
+        width: '100%',
     },
     input: {
-        borderRadius: 5,
+        width: '95%',
+        height: '45%',
+        paddingLeft: 10,
         borderColor: 'gray',
+        borderRadius: 5,
         borderWidth: 1,
         elevation: 1,
-        height: 35,
     },
     center: {
         flex: 1,
-        alignItems: 'flex-start',
         justifyContent: 'center',
         width: '100%',
     },
@@ -290,15 +282,5 @@ const styles = StyleSheet.create({
         height: 35,
         borderRadius: 5,
         marginHorizontal: 5,
-    },
-    dropdown_btn: {
-        marginTop: 10,
-        height: 35,
-        width: '90%',
-        borderWidth: 1,
-        borderColor: 'gray',
-        borderRadius: 5,
-        marginHorizontal: 10,
-        marginBottom: 10,
     },
 });

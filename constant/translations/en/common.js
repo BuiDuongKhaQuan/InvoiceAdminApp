@@ -5,6 +5,7 @@ export default {
     password: 'Password',
     notification: 'Notification',
     logout: 'Logout',
+    application: 'Application',
 
     information: 'Information',
     changeAvt: 'Change Avatar',
@@ -16,7 +17,9 @@ export default {
     male: 'Male',
     female: 'Female',
     save: 'Save',
-
+    alert_no: 'No',
+    alert_yes: 'Agree',
+    alert_lan: 'Are you sure you want to change the language?',
     changePassword: 'Change Password',
     oldPass: 'Old Password',
     newPass: 'New Password',
@@ -25,12 +28,11 @@ export default {
     forgotPass: 'Forgot Password',
     passwordIncorrect: ' Incorrect Password',
     format: 'Password is 6 to 8 characters long',
-
+    send: 'Send',
     notify: 'Notification on and off',
     note: 'Turn on to get the earliest notification',
 
     login: 'Login',
-    send: 'Send',
     otpCode: 'Enter otp code',
     haveAccount: 'Do you have an account? ',
     verify: 'Verification',
@@ -40,6 +42,11 @@ export default {
     transmissionError: 'Transmission error, please try again later',
     errLogin: 'Error Login',
     search: 'Search for business name, email,...',
+    searchProduct: 'Search by product name',
+    searchBill: 'Search by bill id',
+    searchCompany: 'Search by company name',
+    searchUser: 'Search by user name',
+
     home: 'Home',
     profile: 'Profile',
     productManagement: 'Product Management',

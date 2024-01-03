@@ -1,16 +1,12 @@
-import { StyleSheet, Text, View, FlatList, Image } from 'react-native';
+import { StyleSheet, Text, View, FlatList } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { MaterialCommunityIcons, FontAwesome5, AntDesign } from '@expo/vector-icons';
-import Button from '../components/Button';
+import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import { getAllCompanies1, getAllInvoice1, getAllUser1 } from '../Service/api';
 import { useTranslation } from 'react-i18next';
-import Loading from '../components/Loading';
 import { LineChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
 export default function Home() {
     const { t } = useTranslation();
-    const [account, setAccount] = useState(0);
-    const [invoices, setINvoices] = useState(0);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
     const [item, setItem] = useState([

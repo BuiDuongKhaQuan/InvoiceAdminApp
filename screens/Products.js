@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
-import { AntDesign, Feather, Ionicons, Foundation } from '@expo/vector-icons';
+import { AntDesign, Feather, Ionicons, Foundation, FontAwesome } from '@expo/vector-icons';
 import { Row, Rows, Table, TableWrapper } from 'react-native-reanimated-table';
 import { getAllProduct, getProductByName } from '../Service/api';
 import { exportExcel } from '../utilies/export';
@@ -11,26 +11,38 @@ import Loading from '../components/Loading';
 import { useTranslation } from 'react-i18next';
 
 export default function Company() {
+    const { t } = useTranslation();
     const [dataPopup, setDataPopup] = useState();
     const [visible, setVisible] = useState(false);
     const [products, setProducts] = useState([]);
     const [nameSearch, setNamSearch] = useState('');
     const [loading, setLoading] = useState(false);
-    const { t } = useTranslation();
+    const [page, setPage] = useState(1);
+
+    const getProducts = async (page) => {
+        setLoading(true);
+        try {
+            const data = await getAllProduct(25, page);
+            setProducts((prevData) => [...prevData, ...data]);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
+    };
     useEffect(() => {
-        const products = async () => {
-            setLoading(true);
-            try {
-                const data = await getAllProduct();
-                setProducts(data);
-            } catch (error) {
-                console.log(error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        products();
-    }, []);
+        getProducts(page);
+    }, [page]);
+
+    const handleScroll = (event) => {
+        const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+        const paddingToBottom = 20; // Đặt một giá trị padding để xác định khi nào là cuối trang
+
+        if (layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom) {
+            // Nếu đã cuộn đến cuối, tăng số trang lên 1 để fetch dữ liệu trang tiếp theo
+            setPage((prevPage) => prevPage + 1);
+        }
+    };
 
     const handleExportExcel = async () => await exportExcel(products, 'Product');
     const handleSearch = async () => {
@@ -57,24 +69,38 @@ export default function Company() {
             <Foundation name="indent-more" size={24} color="green" />
         </TouchableOpacity>
     );
-    const headers = [t('common:no'), t('common:name'), t('common:price'), t('common:company'), ''];
+    const StatusView = ({ data }) => {
+        let icon;
+
+        if (data.status === 1) {
+            icon = <FontAwesome name="check" size={17} color="green" />;
+        }
+        if (data.status === 2) {
+            icon = <FontAwesome name="remove" size={17} color="red" />;
+        }
+
+        return <View style={styles.action}>{icon}</View>;
+    };
+    const headers = [t('common:no'), t('common:name'), t('common:price'), t('common:company'), '', ''];
     const data = () =>
         products.map((product) => [
             product.id,
             product.name,
             product.price,
             product.nameCompany,
+            <StatusView data={product} />,
             <ActionButton data={product} />,
         ]);
-
+    const handleClose = () => {
+        setVisible(false);
+        setDataPopup(null);
+    };
     return (
         <View style={styles.container}>
-            <Loading loading={loading} />
-            {dataPopup && <Popup visible={visible} onClose={() => setVisible(false)} data={dataPopup} />}
+            {dataPopup && <Popup visible={visible} onClose={handleClose} data={dataPopup} />}
             <Input
-                holder={t('common:search')}
+                holder={t('common:searchProduct')}
                 iconLeft={<Feather name="search" size={21} color="black" />}
-                iconRight={<Ionicons name="ios-qr-code-outline" size={21} color="black" />}
                 customStylesContainer={{
                     borderRadius: 0,
                     height: 50,
@@ -89,49 +115,48 @@ export default function Company() {
                 onChangeText={(name) => setNamSearch(name)}
                 onSubmitEditing={handleSearch}
             />
-            <ScrollView style={{ marginHorizontal: 10 }}>
-                <View style={styles.container_top}>
-                    <View style={styles.btns}>
-                        <Button
-                            text={t('common:exportExcel')}
-                            onPress={handleExportExcel}
-                            iconLeft={<AntDesign name="export" size={17} color="black" />}
-                            customStylesBtn={{
-                                width: '30%',
-                                height: '100%',
-                                marginVertical: 5,
-                                backgroundColor: '#00ffed',
-                                borderRadius: 4,
-                            }}
-                            customStylesText={styles.btnText}
-                            customStylesIcon={styles.icon_btn}
-                        />
-                    </View>
+            <View style={styles.container_top}>
+                <View style={styles.btns}>
+                    <Button
+                        text={t('common:exportExcel')}
+                        onPress={handleExportExcel}
+                        iconLeft={<AntDesign name="export" size={17} color="black" />}
+                        customStylesBtn={{
+                            width: '40%',
+                            height: '100%',
+                            marginVertical: 5,
+                            backgroundColor: '#00ffed',
+                            borderRadius: 4,
+                        }}
+                        customStylesText={styles.btnText}
+                        customStylesIcon={styles.icon_btn}
+                    />
                 </View>
-                <View style={styles.container_center}>
-                    <View style={styles.center_bottom}>
-                        <Table borderStyle={{ borderWidth: 1 }}>
-                            <Row
-                                data={headers}
-                                style={{
-                                    backgroundColor: 'lightgray',
-                                }}
-                                height={25}
-                                flexArr={[0.5, 2, 2, 2, 0.5]}
+            </View>
+            <View style={styles.container_center}>
+                <ScrollView style={{ marginHorizontal: 10 }} onScroll={handleScroll} scrollEventThrottle={16}>
+                    <Table borderStyle={{ borderWidth: 1 }}>
+                        <Row
+                            data={headers}
+                            style={{
+                                backgroundColor: 'lightgray',
+                            }}
+                            height={25}
+                            flexArr={[0.5, 2, 2, 1.8, 0.4, 0.5]}
+                            textStyle={styles.tableheader}
+                        />
+                        <TableWrapper>
+                            <Rows
+                                data={data()}
+                                flexArr={[0.5, 2, 2, 1.8, 0.4, 0.5]}
+                                heightArr={25}
                                 textStyle={styles.tableheader}
                             />
-                            <TableWrapper>
-                                <Rows
-                                    data={data()}
-                                    flexArr={[0.5, 2, 2, 2, 0.5]}
-                                    heightArr={25}
-                                    textStyle={styles.tableheader}
-                                />
-                            </TableWrapper>
-                        </Table>
-                    </View>
-                </View>
-            </ScrollView>
+                        </TableWrapper>
+                    </Table>
+                    <Loading loading={loading} isFooter></Loading>
+                </ScrollView>
+            </View>
         </View>
     );
 }
@@ -151,6 +176,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         marginVertical: 10,
+        marginHorizontal: 10,
     },
     btns: {
         flexDirection: 'row',
@@ -174,8 +200,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 5,
     },
     container_center: {
-        flex: 8,
-        flexDirection: 'colum',
+        flex: 20,
     },
     center_top: {
         flex: 1,

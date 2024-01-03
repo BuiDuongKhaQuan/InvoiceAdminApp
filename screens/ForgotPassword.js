@@ -1,33 +1,25 @@
-import { StyleSheet, Text, View, Image, Keyboard, ImageBackground } from 'react-native';
+import { StyleSheet, Text, View, Image, Keyboard, ImageBackground, ScrollView, Alert } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Input from '../components/Input';
 import Button from '../components/Button';
-import { isValidateEmail, isValidateCode } from '../utilies/validate';
+import { isValidateEmail, isValidateCode, isValidateOTP } from '../utilies/validate';
 import { fontSizeDefault } from '../constant/fontSize';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import BackgroundImage from '../layouts/DefaultLayout/BackgroundImage';
 import { useTranslation } from 'react-i18next';
+import Loading from '../components/Loading';
+import { statusBarHeight } from '../constant/dimistion';
+import { forgotPassword, validateReset } from '../Service/api';
+import { useNavigation } from '@react-navigation/native';
 
-export default function ForgotPassword({ navigation }) {
+export default function ForgotPassword() {
     const { t } = useTranslation();
-    const [keyboardIsShow, setKeyboardIsShow] = useState(false);
     const [email, setEmail] = useState('');
     const [code, setCode] = useState('');
     const [errorEmail, setErrorEmail] = useState(false);
     const [errorCode, setErrorCode] = useState(false);
-
-    useEffect(() => {
-        Keyboard.addListener('keyboardDidShow', () => {
-            setKeyboardIsShow(true);
-        });
-        Keyboard.addListener('keyboardDidHide', () => {
-            setKeyboardIsShow(false);
-        });
-    });
-
-    const centerStyle = keyboardIsShow
-        ? { ...styles.container_center, flex: 2, justifyContent: 'center' }
-        : { ...styles.container_center };
+    const [loading, setLoading] = useState(false);
+    const navigation = useNavigation();
 
     const isValidateConfirm = () => code.length > 0 && errorCode == false;
 
@@ -35,7 +27,7 @@ export default function ForgotPassword({ navigation }) {
         if (!isValidateConfirm()) {
             return;
         } else {
-            alert(isValidateConfirm());
+            handleSendOTP();
         }
     };
 
@@ -44,90 +36,112 @@ export default function ForgotPassword({ navigation }) {
         setEmail(text);
     };
     const handleChangeCode = (text) => {
-        setErrorCode(!isValidateCode(text));
+        setErrorCode(!isValidateOTP(text));
         setCode(text);
     };
+
+    const handleSend = () => {
+        // setLoading(true);
+        handleSendEmail();
+    };
+
+    const handleSendEmail = async () => {
+        setLoading(true);
+        try {
+            await forgotPassword(email);
+            Alert.alert(t('common:alert_success'), t('common:OPTSuccess'));
+        } catch (error) {
+            if (error.response && error.response.status === 404) {
+                Alert.alert(t('common:error'), error.response.data.message);
+            } else {
+                Alert.alert(t('common:error'), t('common:transmissionError'));
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleSendOTP = async () => {
+        setLoading(true);
+        try {
+            const re = await validateReset(email, code);
+            navigation.navigate('ResetPassword', { data: email });
+        } catch (error) {
+            console.log(error);
+            if (error.response && error.response.status === 404) {
+                Alert.alert(t('common:error'), error.response.data.message);
+            } else {
+                Alert.alert(t('common:error'), t('common:transmissionError'));
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
     return (
-        <View style={styles.container}>
-            {/* <BackgroundImage> */}
-            <View style={styles.container_top}>
-                <Image style={styles.logo} source={require('../assets/images/logo.png')} />
-                <Text style={styles.title}>Invoice C</Text>
-            </View>
+        <BackgroundImage>
+            <ScrollView style={styles.container}>
+                <Loading loading={loading} isFullScreen />
+                <View style={styles.container_top}>
+                    <Image style={styles.logo} source={require('../assets/images/logo.png')} />
+                </View>
 
-            <View style={centerStyle}>
-                <Input
-                    onChangeText={handleChangeEmail}
-                    value={email}
-                    validate={errorEmail}
-                    validateText={t('common:format')}
-                    holder="Email"
-                    iconLeft={<MaterialCommunityIcons name="email-outline" size={24} color="black" />}
-                    btnSend
-                />
-                <Input
-                    onChangeText={handleChangeCode}
-                    value={code}
-                    validate={errorCode}
-                    validateText={t('common:verifyCode')}
-                    customStylesInput={{ marginLeft: 50 }}
-                    holder={t('common:verify')}
-                />
+                <View style={styles.container_center}>
+                    <Input
+                        onChangeText={handleChangeEmail}
+                        value={email}
+                        validate={errorEmail}
+                        validateText={t('common:formatEmail')}
+                        holder="Email"
+                        iconLeft={<MaterialCommunityIcons name="email-outline" size={24} color="black" />}
+                        btnSend
+                        onPressSend={handleSend}
+                        keyboardType={'email-address'}
+                    />
+                    <Input
+                        onChangeText={handleChangeCode}
+                        value={code}
+                        validate={errorCode}
+                        validateText={t('common:verifyCode')}
+                        customStylesInput={{ marginLeft: 50 }}
+                        holder={t('common:verify')}
+                    />
 
-                {keyboardIsShow || (
-                    <>
-                        <Button onPress={handlePress} text={t('common:confirm')} customStylesBtn={styles.btn} />
-                    </>
-                )}
-            </View>
-            {/* </BackgroundImage> */}
-        </View>
+                    <View style={styles.view_login}>
+                        <View style={styles.btn_login}>
+                            <Button onPress={handlePress} text={t('common:confirm')} />
+                        </View>
+                    </View>
+                </View>
+            </ScrollView>
+        </BackgroundImage>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: '#E4E8E5',
+        marginHorizontal: 10,
     },
     container_top: {
         flex: 4,
-        height: 100,
         justifyContent: 'center',
         alignItems: 'center',
     },
     logo: {
-        width: 200,
-        height: 200,
+        marginTop: statusBarHeight,
+        width: 400,
+        height: 400,
     },
-    title: {
-        fontSize: 70,
-        marginTop: -10,
-        marginBottom: 10,
-        color: '#B3B70A',
-        textShadowColor: '#2AA50B',
-        textShadowRadius: 5,
-        textShadowOffset: { width: 2, height: 2 },
-    },
-
     container_center: {
-        flex: 5,
+        flex: 4,
         alignItems: 'center',
-        justifyContent: 'flex-start',
     },
 
-    register: {
+    view_login: {
+        width: '100%',
         flexDirection: 'row',
+        alignItems: 'center',
     },
-    register_text: {
-        fontSize: fontSizeDefault,
-    },
-    register_btn: {
-        fontSize: fontSizeDefault,
-        fontWeight: '700',
-        color: '#26B819',
-    },
-    btn: {
-        width: 347,
+    btn_login: {
+        flex: 1,
     },
 });

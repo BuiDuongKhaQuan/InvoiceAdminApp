@@ -5,6 +5,7 @@ export default {
     password: 'पासवर्ड',
     notification: 'सूचना',
     logout: 'लॉग आउट',
+    application: 'अनुप्रयोग ',
 
     information: 'जानकारी',
     changeAvt: 'अवतार बदलें',
@@ -16,6 +17,13 @@ export default {
     male: 'पुरुष',
     female: 'महिला',
     save: 'सहेजें',
+    alert_no: 'नहीं',
+    alert_yes: 'सहमत',
+    alert_lan: 'क्या आप वाकई भाषा बदलना चाहते हैं?',
+    searchProduct: 'उत्पाद के नाम से खोजें',
+    searchBill: 'बिल आईडी से खोजें',
+    searchCompany: 'कंपनी के नाम से खोजें',
+    searchUser: 'उपयोगकर्ता के नाम से खोजें',
 
     changePassword: 'पासवर्ड बदलें',
     oldPass: 'पुराना पासवर्ड',

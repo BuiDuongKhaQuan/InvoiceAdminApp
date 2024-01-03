@@ -1,22 +1,21 @@
-import { StyleSheet, Text, View, Modal, TouchableOpacity, Image, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, Modal, TouchableOpacity, Keyboard, ScrollView, Alert } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Button from '../Button';
 import { white } from '../../constant/color';
 import { fontSizeDefault } from '../../constant/fontSize';
 import { AntDesign } from '@expo/vector-icons';
 import Input from '../Input';
-import { createCompany, deleteCompany, updateProduct } from '../../Service/api';
-import * as ImagePicker from 'expo-image-picker';
+import { deleteProductById, updateProduct } from '../../Service/api';
 import Loading from '../Loading';
 import { useTranslation } from 'react-i18next';
 
 export default function Popup({ visible, onClose, data }) {
     const { t } = useTranslation();
     const [product, setProduct] = useState(data);
-    const [image, setImage] = useState(null);
-    const [name, setName] = useState();
-    const [price, setPrice] = useState();
-    const [description, setDesciption] = useState();
+    const [name, setName] = useState(data ? product.name : '');
+    const [price, setPrice] = useState(data ? product.price : '');
+    const [stock, setStock] = useState(data ? product.stock : '');
+    const [description, setDesciption] = useState(data ? product.description : '');
     const [loading, setLoading] = useState(false);
     const [keyboardIsShow, setKeyboardIsShow] = useState(false);
     const newStyle = keyboardIsShow ? { ...styles.container, height: '100%' } : { ...styles.container };
@@ -31,16 +30,15 @@ export default function Popup({ visible, onClose, data }) {
     });
 
     const handleDelete = async () => {
-        // setLoading(true);
-        // try {
-        //     const response = await deleteCompany(data.id);
-        //     setProduct(response);
-        //     console.log(response);
-        // } catch (error) {
-        //     console.error(' error:', error.response);
-        // } finally {
-        //     setLoading(false);
-        // }
+        try {
+            setLoading(true);
+            const response = await deleteProductById(data.id);
+            Alert.alert(t('common:notification'), t('common:success'));
+        } catch (error) {
+            console.error(' error:', error.response);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handlerSend = async () => {
@@ -48,6 +46,7 @@ export default function Popup({ visible, onClose, data }) {
         try {
             const response = await updateProduct(data.id, name, '1', price, description, '1');
             setProduct(response);
+            Alert.alert(t('common:notification'), t('common:success'));
         } catch (error) {
             console.error(' error:', error.response.data.message);
         } finally {
@@ -58,8 +57,8 @@ export default function Popup({ visible, onClose, data }) {
     return (
         <Modal animationType="slide" transparent={true} visible={visible} onRequestClose={onClose}>
             <View style={newStyle}>
-                <Loading loading={loading} />
-                <View style={styles.top}>
+                <Loading loading={loading} isFullScreen />
+                <ScrollView style={{ width: '100%' }}>
                     <View style={styles.header}>
                         <View style={styles.header_item}></View>
                         <View style={styles.header_item}>
@@ -72,61 +71,61 @@ export default function Popup({ visible, onClose, data }) {
                             <AntDesign name="close" size={24} color="black" />
                         </TouchableOpacity>
                     </View>
-                    <View style={styles.content}>
-                        <View style={styles.information}>
-                            <View style={styles.input_item}>
-                                <Text style={styles.title}>{t('common:name')}</Text>
-                                <View style={styles.container_input}>
-                                    <Input
-                                        value={name}
-                                        onChangeText={(name) => setName(name)}
-                                        customStylesContainer={styles.input}
-                                        holder={data ? data.name : 'common:enterName'}
-                                    />
-                                </View>
-                            </View>
-                            <View style={styles.input_item}>
-                                <Text style={styles.title}>{t('common:price')}</Text>
-                                <View style={styles.container_input}>
-                                    <Input
-                                        value={price}
-                                        onChangeText={(price) => setPrice(price)}
-                                        customStylesContainer={styles.input}
-                                        holder={data ? data.price.toString() : 'common:enterValue'}
-                                    />
-                                </View>
-                            </View>
-
-                            <View style={styles.input_item}>
-                                <Text style={styles.title}>{t('common:description')}</Text>
-                                <View style={styles.container_input}>
-                                    <Input
-                                        value={description}
-                                        onChangeText={(description) => setDesciption(description)}
-                                        customStylesContainer={styles.input}
-                                        holder={data ? data.description : 'common:enterValue'}
-                                    />
-                                </View>
-                            </View>
+                    <View style={styles.center}>
+                        <View style={styles.input_item}>
+                            <Text style={styles.title}>{t('common:name')}</Text>
+                            <Input
+                                value={name}
+                                onChangeText={(name) => setName(name)}
+                                customStylesContainer={styles.input}
+                                holder={data ? data.name : 'common:enterName'}
+                            />
+                        </View>
+                        <View style={styles.input_item}>
+                            <Text style={styles.title}>{t('common:price')}</Text>
+                            <Input
+                                value={String(price)}
+                                onChangeText={(price) => setPrice(price)}
+                                customStylesContainer={styles.input}
+                                holder={data ? data.price.toString() : 'common:enterValue'}
+                            />
+                        </View>
+                        <View style={styles.input_item}>
+                            <Text style={styles.title}>{t('common:price')}</Text>
+                            <Input
+                                value={String(stock)}
+                                onChangeText={(stock) => setStock(stock)}
+                                customStylesContainer={styles.input}
+                                holder={data ? data.price.toString() : 'common:enterValue'}
+                            />
+                        </View>
+                        <View style={styles.input_item}>
+                            <Text style={styles.title}>{t('common:description')}</Text>
+                            <Input
+                                value={description}
+                                onChangeText={(description) => setDesciption(description)}
+                                customStylesContainer={styles.input}
+                                holder={data ? data.description : 'common:enterValue'}
+                            />
                         </View>
                     </View>
-                </View>
 
-                <View style={styles.bottom}>
-                    <Button
-                        onPress={handlerSend}
-                        customStylesText={styles.text}
-                        customStylesBtn={styles.btn}
-                        text={t('common:saveChanges')}
-                    />
+                    <View style={styles.bottom}>
+                        <Button
+                            onPress={handlerSend}
+                            customStylesText={styles.text}
+                            customStylesBtn={styles.btn}
+                            text={t('common:saveChanges')}
+                        />
 
-                    <Button
-                        onPress={handleDelete}
-                        customStylesText={styles.text}
-                        customStylesBtn={styles.btn}
-                        text={t('common:delete')}
-                    />
-                </View>
+                        <Button
+                            onPress={handleDelete}
+                            customStylesText={styles.text}
+                            customStylesBtn={styles.btn}
+                            text={t('common:delete')}
+                        />
+                    </View>
+                </ScrollView>
             </View>
         </Modal>
     );
@@ -136,7 +135,6 @@ const styles = StyleSheet.create({
     container: {
         position: 'absolute',
         bottom: 0,
-        height: '50%',
         width: '100%',
         alignItems: 'center',
         flexDirection: 'column',
@@ -177,6 +175,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    center: {
+        flex: 1,
+        justifyContent: 'center',
+        width: '100%',
+    },
     img: {
         resizeMode: 'stretch',
         width: 90,
@@ -195,28 +198,25 @@ const styles = StyleSheet.create({
     },
     input_item: {
         flex: 1,
-        marginBottom: 10,
-        marginHorizontal: 10,
+        width: '100%',
+        alignItems: 'center',
         justifyContent: 'center',
     },
     title: {
         fontSize: fontSizeDefault,
         fontWeight: 'bold',
-    },
-    container_input: {
-        flex: 1,
+        textAlign: 'left',
+        marginLeft: 10,
         width: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
     },
     input: {
-        borderRadius: 5,
+        width: '95%',
+        height: '45%',
+        paddingLeft: 10,
         borderColor: 'gray',
+        borderRadius: 5,
         borderWidth: 1,
         elevation: 1,
-        paddingLeft: 5,
-        height: '60%',
-        width: '95%',
     },
     center: {
         flex: 1,

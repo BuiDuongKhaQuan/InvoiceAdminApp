@@ -1,4 +1,4 @@
-import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Button from '../components/Button';
 import Input from '../components/Input';
@@ -19,6 +19,7 @@ export default function Company() {
     const [companys, setCompanys] = useState([]);
     const [loading, setLoading] = useState(false);
     const [visibleCreate, setVisibleCreate] = useState(false);
+    const [page, setPage] = useState(1);
     const type = [
         {
             title: t('common:all'),
@@ -33,41 +34,36 @@ export default function Company() {
             index: 2,
         },
     ];
+    const getCompany = async (page) => {
+        setLoading(true);
+        try {
+            const data = await getAllCompanies(25, page);
+            setCompanys((prev) => [...prev, ...data]);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
+    };
     useEffect(() => {
-        const companys = async () => {
-            setLoading(true);
-            try {
-                const data = await getAllCompanies();
-                setCompanys(data);
-            } catch (error) {
-                console.log(error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        companys();
-    }, []);
+        getCompany(page);
+    }, [page]);
 
-    useEffect(() => {
-        const companys = async () => {
-            setLoading(true);
-            try {
-                const data = await getAllCompanies();
-                setCompanys(data);
-            } catch (error) {
-                console.log(error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        companys();
-    }, [visible == false]);
+    const handleScroll = (event) => {
+        const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+        const paddingToBottom = 20; // Đặt một giá trị padding để xác định khi nào là cuối trang
+
+        if (layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom) {
+            // Nếu đã cuộn đến cuối, tăng số trang lên 1 để fetch dữ liệu trang tiếp theo
+            setPage((prevPage) => prevPage + 1);
+        }
+    };
 
     const handleFilter = async (status) => {
         setLoading(true);
         try {
             if (status === 3) {
-                const response = await getAllCompanies();
+                const response = await getAllCompanies(25, page);
                 const data = response;
                 setCompanys(data);
             } else {
@@ -117,7 +113,7 @@ export default function Company() {
 
         return <View style={styles.action}>{icon}</View>;
     };
-    const headers = [t('common:no'), t('common:company'), t('common:phone'), t('common:status'), ''];
+    const headers = [t('common:no'), t('common:company'), t('common:phone'), '', ''];
     const data = () =>
         companys.map((company) => [
             company.id,
@@ -127,13 +123,17 @@ export default function Company() {
             <ActionButton data={company} />,
         ]);
 
+    const handleClose = () => {
+        setVisible(false);
+        setDataPopup(null);
+    };
+
     return (
         <View style={styles.container}>
-            <Loading loading={loading} />
-            {dataPopup && <Popup visible={visible} onClose={() => setVisible(false)} data={dataPopup} />}
+            {dataPopup && <Popup visible={visible} onClose={handleClose} data={dataPopup} />}
             <Popup visible={visibleCreate} onClose={() => setVisibleCreate(false)} create />
             <Input
-                holder={t('common:search Tìm kiếm theo tên công ty')}
+                holder={t('common:searchCompany')}
                 iconLeft={<Feather name="search" size={21} color="black" />}
                 iconRight={<Ionicons name="ios-qr-code-outline" size={21} color="black" />}
                 customStylesContainer={{
@@ -150,86 +150,85 @@ export default function Company() {
                 onChangeText={(name) => setNameSearch(name)}
                 onSubmitEditing={handleSearch}
             />
-            <ScrollView style={{ marginHorizontal: 10 }}>
-                <View style={styles.container_top}>
-                    <View style={styles.btns}>
-                        <Button
-                            text={t('common:createCompany')}
-                            onPress={handleCreate}
-                            iconLeft={<AntDesign name="plus" size={17} color="black" />}
-                            customStylesBtn={{
-                                width: '35%',
-                                height: '100%',
-                                marginVertical: 5,
-                                backgroundColor: '#59f759',
-                                borderRadius: 4,
+            <View style={styles.container_top}>
+                <View style={styles.btns}>
+                    <Button
+                        text={t('common:createCompany')}
+                        onPress={handleCreate}
+                        iconLeft={<AntDesign name="plus" size={17} color="black" />}
+                        customStylesBtn={{
+                            width: '35%',
+                            height: '100%',
+                            marginVertical: 5,
+                            backgroundColor: '#59f759',
+                            borderRadius: 4,
+                        }}
+                        customStylesText={styles.btnText}
+                        customStylesIcon={styles.icon_btn}
+                    />
+                    <Button
+                        text={t('common:exportExcel')}
+                        onPress={handleExportExcel}
+                        iconLeft={<AntDesign name="export" size={17} color="black" />}
+                        customStylesBtn={{
+                            width: '35%',
+                            height: '100%',
+                            marginLeft: 5,
+                            marginVertical: 5,
+                            backgroundColor: '#00ffed',
+                            borderRadius: 4,
+                        }}
+                        customStylesText={styles.btnText}
+                        customStylesIcon={styles.icon_btn}
+                    />
+                    <View
+                        style={{
+                            width: '30%',
+                        }}
+                    >
+                        <SelectDropdown
+                            data={type}
+                            onSelect={(selectedItem, index) => {
+                                handleFilter(selectedItem.index);
                             }}
-                            customStylesText={styles.btnText}
-                            customStylesIcon={styles.icon_btn}
+                            buttonStyle={styles.dropdown_btn}
+                            defaultButtonText={t('common:select')}
+                            renderDropdownIcon={() => <Entypo name="chevron-small-down" size={24} color="black" />}
+                            dropdownIconPosition="right"
+                            buttonTextAfterSelection={(selectedItem, index) => {
+                                return selectedItem.title;
+                            }}
+                            rowTextForSelection={(item, index) => {
+                                return item.title;
+                            }}
                         />
-                        <Button
-                            text={t('common:exportExcel')}
-                            onPress={handleExportExcel}
-                            iconLeft={<AntDesign name="export" size={17} color="black" />}
-                            customStylesBtn={{
-                                width: '30%',
-                                height: '100%',
-                                marginLeft: 5,
-                                marginVertical: 5,
-                                backgroundColor: '#00ffed',
-                                borderRadius: 4,
-                            }}
-                            customStylesText={styles.btnText}
-                            customStylesIcon={styles.icon_btn}
-                        />
-                        <View
-                            style={{
-                                width: '40%',
-                            }}
-                        >
-                            <SelectDropdown
-                                data={type}
-                                onSelect={(selectedItem, index) => {
-                                    handleFilter(selectedItem.index);
-                                }}
-                                buttonStyle={styles.dropdown_btn}
-                                defaultButtonText={t('common:select')}
-                                renderDropdownIcon={() => <Entypo name="chevron-small-down" size={24} color="black" />}
-                                dropdownIconPosition="right"
-                                buttonTextAfterSelection={(selectedItem, index) => {
-                                    return selectedItem.title;
-                                }}
-                                rowTextForSelection={(item, index) => {
-                                    return item.title;
-                                }}
-                            />
-                        </View>
                     </View>
                 </View>
-                <View style={styles.container_center}>
-                    <View style={styles.center_bottom}>
-                        <Table borderStyle={{ borderWidth: 1 }}>
-                            <Row
-                                data={headers}
-                                style={{
-                                    backgroundColor: 'lightgray',
-                                }}
-                                height={25}
-                                flexArr={[0.5, 2, 2, 0.6, 0.4]}
+            </View>
+            <View style={styles.container_center}>
+                <ScrollView style={{ marginHorizontal: 10 }} onScroll={handleScroll} scrollEventThrottle={16}>
+                    <Table borderStyle={{ borderWidth: 1 }}>
+                        <Row
+                            data={headers}
+                            style={{
+                                backgroundColor: 'lightgray',
+                            }}
+                            height={25}
+                            flexArr={[0.5, 2, 2, 0.4, 0.4]}
+                            textStyle={styles.tableheader}
+                        />
+                        <TableWrapper>
+                            <Rows
+                                data={data()}
+                                flexArr={[0.5, 2, 2, 0.4, 0.4]}
+                                heightArr={25}
                                 textStyle={styles.tableheader}
                             />
-                            <TableWrapper>
-                                <Rows
-                                    data={data()}
-                                    flexArr={[0.5, 2, 2, 0.6, 0.4]}
-                                    heightArr={25}
-                                    textStyle={styles.tableheader}
-                                />
-                            </TableWrapper>
-                        </Table>
-                    </View>
-                </View>
-            </ScrollView>
+                        </TableWrapper>
+                    </Table>
+                    <Loading loading={loading} isFooter></Loading>
+                </ScrollView>
+            </View>
         </View>
     );
 }
@@ -249,6 +248,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         marginVertical: 10,
+        marginHorizontal: 10,
     },
     btns: {
         flexDirection: 'row',
@@ -272,8 +272,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 5,
     },
     container_center: {
-        flex: 8,
-        flexDirection: 'colum',
+        flex: 20,
     },
     center_top: {
         flex: 1,

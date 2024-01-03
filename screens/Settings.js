@@ -1,46 +1,34 @@
-import { StyleSheet, Text, View, FlatList } from 'react-native';
-import React, { useState } from 'react';
-import Button from '../components/Button';
-import SettingItem from '../components/SettingItem';
-import Header from '../components/SettingItem/header';
-import { AntDesign, Ionicons, MaterialIcons, SimpleLineIcons } from '@expo/vector-icons';
-import { useUserContext } from './UserContext';
-import { useNavigation } from '@react-navigation/native';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import { Ionicons, MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
+import { white } from '../constant/color';
+import { fontSizeDefault } from '../constant/fontSize';
+import Button from '../components/Button';
+import { useNavigation } from '@react-navigation/native';
 
 export default function Setting() {
     const { t } = useTranslation();
-    const { dispatch } = useUserContext();
     const navigation = useNavigation();
-    const [itemSetting, setItemSetting] = useState([
-        {
-            id: '2',
-            title: t('common:application'),
-            data: [
-                {
-                    id: '1',
-                    icon: <MaterialIcons name="language" size={24} color="black" />,
-                    title: t('common:language'),
-                    router: 'Language',
-                },
-                {
-                    id: '2',
-                    icon: <Ionicons name="notifications-outline" size={24} color="black" />,
-                    title: t('common:notification'),
-                    router: 'Notification',
-                },
-            ],
-        },
-    ]);
+    const iconRight = <AntDesign name="arrowright" size={24} color="black" />;
 
     return (
         <View style={styles.container}>
-            <FlatList
-                data={itemSetting}
-                renderItem={({ item }) => {
-                    return <SettingItem data={item} key={item.id} />;
-                }}
-                keyExtractor={(item) => item.id}
+            <Button
+                customStylesBtn={styles.btn}
+                customStylesText={styles.text}
+                iconLeft={<MaterialIcons name="language" size={24} color="black" />}
+                iconRight={iconRight}
+                onPress={() => navigation.navigate('Language')}
+                text={t('common:language')}
+            />
+            <Button
+                customStylesBtn={styles.btn}
+                customStylesText={styles.text}
+                iconLeft={<Ionicons name="notifications-outline" size={24} color="black" />}
+                iconRight={iconRight}
+                onPress={() => navigation.navigate('Notification')}
+                text={t('common:notification')}
             />
         </View>
     );
@@ -65,5 +53,20 @@ const styles = StyleSheet.create({
         elevation: 0,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    btn: {
+        marginVertical: 1,
+        backgroundColor: white,
+        borderRadius: 0,
+        borderWidth: 0,
+        width: '100%',
+        elevation: 0,
+        justifyContent: 'space-between',
+    },
+    text: {
+        color: '#000000',
+        fontWeight: 400,
+        fontSize: fontSizeDefault,
+        textAlign: 'left',
     },
 });
