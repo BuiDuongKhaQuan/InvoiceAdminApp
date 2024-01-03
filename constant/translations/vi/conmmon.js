@@ -4,6 +4,7 @@ export default {
     password: 'Mật khẩu',
     notification: 'Thông báo',
     logout: 'Đăng xuất',
+    application: 'Ứng dụng',
 
     information: 'Thông tin',
     name: 'Tên',
@@ -13,6 +14,13 @@ export default {
     male: 'Nam',
     female: 'Nữ',
     save: 'Lưu',
+    alert_no: 'Không',
+    alert_yes: 'Đồng ý',
+    alert_lan: 'Bạn có chắc chắn muốn thay đổi ngôn ngữ không?',
+    searchProduct: 'Tìm kiếm theo tên sản phẩm',
+    searchBill: 'Tìm kiếm theo ID hóa đơn',
+    searchCompany: 'Tìm kiếm theo tên công ty',
+    searchUser: 'Tìm kiếm theo tên người dùng',
 
     changePassword: 'Thay đổi mật khẩu',
     oldPass: 'Mật khẩu cũ',

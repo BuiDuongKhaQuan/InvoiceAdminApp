@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const instance = axios.create({
+export const instance = axios.create({
     // baseURL: 'http://bill-rest.ap-southeast-2.elasticbeanstalk.com/api',
-    baseURL: 'http://192.168.1.106:8080/api',
+    baseURL: 'http://192.168.189.94:8080/api',
 });
 
 // Auth
@@ -43,7 +43,7 @@ export const forgotPassword = async (email) => {
 };
 export const validateReset = async (email, otp) => {
     try {
-        const response = await instance.post('/v1/auth/validateRegister', {
+        const response = await instance.post('/v1/auth/validateReset', {
             email,
             otp,
         });
@@ -82,9 +82,9 @@ export const getUserByStatus = async (status) => {
         throw error;
     }
 };
-export const getAllUser = async () => {
+export const getAllUser = async (limit, page) => {
     try {
-        const response = await instance.get('/v1/auth/users');
+        const response = await instance.get(`/v1/auth/users?limit=${limit}&page=${page}`);
         return response.data;
     } catch (error) {
         throw error;
@@ -203,9 +203,9 @@ export const getCompaniesByStatus = async (status) => {
         throw error;
     }
 };
-export const getAllCompanies = async () => {
+export const getAllCompanies = async (limit, page) => {
     try {
-        const response = await instance.get(`/v1/companies`);
+        const response = await instance.get(`/v1/companies?limit=${limit}&page=${page}`);
         return response.data;
     } catch (error) {
         throw error;
@@ -368,9 +368,9 @@ export const products = async (name, status, price, listImageFile, companyName, 
         throw error;
     }
 };
-export const getAllProduct = async () => {
+export const getAllProduct = async (limit, page) => {
     try {
-        const response = await instance.get('/v1/products');
+        const response = await instance.get(`/v1/products?limit=${limit}&page=${page}`);
         return response.data;
     } catch (error) {
         throw error;
@@ -423,6 +423,18 @@ export const updateStatus = async (id, status) => {
 export const deleteCompany = async (id) => {
     try {
         const response = await instance.delete(`/v1/companies/${id}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+export const deleteProductById = async (productId) => {
+    try {
+        const response = await instance.delete(`/v1/products`, {
+            data: {
+                productId: productId,
+            },
+        });
         return response.data;
     } catch (error) {
         throw error;

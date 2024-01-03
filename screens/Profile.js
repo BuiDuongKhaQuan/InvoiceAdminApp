@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native';
 import React, { useState } from 'react';
 import Button from '../components/Button';
 import { MaterialCommunityIcons, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
@@ -6,9 +6,9 @@ import Input from '../components/Input';
 import { useUserContext } from './UserContext';
 import * as ImagePicker from 'expo-image-picker';
 import Loading from '../components/Loading';
-import axios from 'axios';
 import { white } from '../constant/color';
 import { useTranslation } from 'react-i18next';
+import { instance } from '../Service/api';
 
 export default function Profile({ navigation }) {
     const { state, dispatch } = useUserContext();
@@ -40,19 +40,16 @@ export default function Profile({ navigation }) {
         });
         setLoading(true);
         try {
-            const response = await axios.patch(
-                'http://bill-rest.ap-southeast-2.elasticbeanstalk.com/api/v1/auth/users',
-                formData,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
+            const response = await instance.patch('/v1/auth/users', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
                 },
-            );
+            });
             dispatch({
                 type: 'SIGN_IN',
                 payload: response.data,
             });
+            Alert.alert('Thông báo', 'Đổi ảnh đại diện thành công');
         } catch (error) {
             console.error('Lỗi:', error);
         } finally {
@@ -67,19 +64,16 @@ export default function Profile({ navigation }) {
         }
         setLoading(true);
         try {
-            const response = await axios.patch(
-                'http://bill-rest.ap-southeast-2.elasticbeanstalk.com/api/v1/auth/users',
-                formData,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
+            const response = await instance.patch('/v1/auth/users', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
                 },
-            );
+            });
             dispatch({
                 type: 'SIGN_IN',
                 payload: response.data,
             });
+            Alert.alert('Thông báo', 'Lưu thông tin thành công');
         } catch (error) {
             console.error(' error:', error.response);
         } finally {
@@ -88,7 +82,7 @@ export default function Profile({ navigation }) {
     };
     return (
         <View style={styles.container}>
-            <Loading loading={loading} />
+            <Loading loading={loading} isFullScreen />
             <View style={styles.container_top}>
                 <View style={styles.top_avatar}>
                     <View style={styles.top_}>
@@ -222,6 +216,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 50,
         elevation: 0,
+        borderRadius: 5,
     },
     input1: {
         fontSize: 15,

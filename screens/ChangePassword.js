@@ -9,6 +9,7 @@ import { changePassword } from '../Service/api';
 import { useUserContext } from './UserContext';
 import Loading from '../components/Loading';
 import { useTranslation } from 'react-i18next';
+import { defaultColor } from '../constant/color';
 
 export default function ChangePassword({ navigation }) {
     const { t } = useTranslation();
@@ -102,11 +103,7 @@ export default function ChangePassword({ navigation }) {
                         value={confirmPass}
                     />
 
-                    <Button
-                        onPress={handlePress}
-                        customStylesBtn={{ width: 340, height: 50, marginLeft: 24 }}
-                        text={t('common:confirm')}
-                    />
+                    <Button onPress={handlePress} text={t('common:confirm')} />
 
                     <Text onPress={() => navigation.navigate('ForgotPassword')} style={styles.forgot}>
                         {t('common:forgotPass')}?
@@ -122,6 +119,8 @@ const styles = StyleSheet.create({
     },
     content_center: {
         flex: 1,
+        justifyContent: 'center',
+        alignContent: 'center',
     },
     content_title: {
         fontSize: fontSizeMenuTitle,
@@ -144,7 +143,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         fontSize: fontSizeDefault,
         fontWeight: 'bold',
-        color: '#26B819',
+        color: defaultColor,
         alignItems: 'center',
         textAlign: 'center',
     },

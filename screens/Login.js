@@ -19,11 +19,10 @@ export default function Login({ navigation }) {
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
     const [errorEmail, setErrorEmail] = useState(false);
-    const [errorPass, setErrorPass] = useState(false);
     const { dispatch } = useUserContext();
     const [loading, setLoading] = useState(false);
 
-    const isValidateLogin = () => email.length > 0 && pass.length > 0 && errorEmail == false && errorPass == false;
+    const isValidateLogin = () => email.length > 0 && errorEmail == false;
 
     const handlePress = () => {
         if (!isValidateLogin()) {
@@ -36,7 +35,7 @@ export default function Login({ navigation }) {
     const handleLogin = async () => {
         setLoading(true);
         try {
-            const userData = await login(email, pass);
+            const userData = await login(email.trim(), pass);
             if (userData.roles == 'ROLE_ADMIN') {
                 dispatch({
                     type: 'SIGN_IN',
@@ -47,13 +46,7 @@ export default function Login({ navigation }) {
                 Alert.alert(t('common:errLogin'), t('common:noAccess'));
             }
         } catch (error) {
-            if (error.response && error.response.status === 400) {
-                Alert.alert(t('common:errLogin'), error.response.data.message);
-            } else if (error.response && error.response.status === 404) {
-                Alert.alert(t('common:errLogin'), error.response.data.message);
-            } else {
-                Alert.alert(t('common:errLogin'), t('common:transmissionError'));
-            }
+            Alert.alert(t('common:errLogin'), t('common:Sai tài khoản hoặc mật khẩu'));
         } finally {
             setLoading(false);
         }
@@ -65,7 +58,6 @@ export default function Login({ navigation }) {
     };
 
     const handleChangePass = (pass) => {
-        setErrorPass(!isValidatePass(pass));
         setPass(pass);
     };
 
@@ -81,6 +73,7 @@ export default function Login({ navigation }) {
                         onChangeText={handleChangeEmail}
                         value={email}
                         validate={errorEmail}
+                        keyboardType={'email-address'}
                         validateText={t('common:formatEmail')}
                         holder="example@example.com"
                         iconLeft={<MaterialCommunityIcons name="email-outline" size={24} color="black" />}
@@ -98,6 +91,11 @@ export default function Login({ navigation }) {
                             <Button onPress={handlePress} text={t('common:login')} />
                         </View>
                     </View>
+                </View>
+                <View style={styles.container_botom}>
+                    <Text onPress={() => navigation.navigate('ForgotPassword')} style={styles.forgot}>
+                        {t('common:forgotPass')}?
+                    </Text>
                 </View>
             </ScrollView>
         </BackgroundImage>
@@ -132,21 +130,6 @@ const styles = StyleSheet.create({
     },
     btn_login: {
         flex: 1,
-    },
-    fingerprint: {
-        flex: 0.18,
-        alignItems: 'center',
-    },
-    register: {
-        flexDirection: 'row',
-    },
-    register_text: {
-        fontSize: fontSizeDefault,
-    },
-    register_btn: {
-        fontSize: fontSizeDefault,
-        fontWeight: '700',
-        color: textColor,
     },
     container_botom: {
         flex: 1,

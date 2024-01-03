@@ -10,6 +10,7 @@ import ChangePassword from './screens/ChangePassword';
 import './constant/translations/DCSLocalize';
 import Language from './screens/Setting/Language';
 import Notification from './screens/Setting/Notification';
+import ResetPassword from './screens/ResetPassword';
 export default function App() {
     const Stack = createNativeStackNavigator();
     const headerNone = { headerShown: false };
@@ -23,6 +24,7 @@ export default function App() {
                     <Stack.Screen name="ChangePassword" component={ChangePassword} options={headerNone} />
                     <Stack.Screen name="Language" component={Language} options={headerNone} />
                     <Stack.Screen name="Notification" component={Notification} options={headerNone} />
+                    <Stack.Screen name="ResetPassword" component={ResetPassword} options={headerNone} />
                 </Stack.Navigator>
             </NavigationContainer>
         </UserProvider>

@@ -25,6 +25,7 @@ export default function DrawerNavigation({ navigation }) {
 
     return (
         <Drawer.Navigator
+            initialRouteName="Home"
             drawerContent={(props) => {
                 return (
                     <SafeAreaView>
@@ -60,10 +61,10 @@ export default function DrawerNavigation({ navigation }) {
             }}
         >
             <Drawer.Screen
-                name="Name"
+                name="Home"
                 component={Home}
                 options={{
-                    drawerLabel: 'Home',
+                    drawerLabel: t('common:home'),
                     title: t('common:home'),
                     drawerIcon: () => <AntDesign name="home" size={24} color="black" />,
                 }}

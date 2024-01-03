@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Modal, TouchableOpacity, Image, Keyboard, Alert } from 'react-native';
+import { StyleSheet, Text, View, Modal, TouchableOpacity, Image, Keyboard, Alert, ScrollView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Button from '../Button';
 import { white } from '../../constant/color';
@@ -10,16 +10,16 @@ import SelectDropdown from 'react-native-select-dropdown';
 import Loading from '../Loading';
 import { useTranslation } from 'react-i18next';
 
-export default function Popup({ visible, onClose, data }) {
+export default function User({ visible, onClose, data }) {
     const { t } = useTranslation();
     const [user, setUser] = useState(data);
     const [company, setCompany] = useState('');
-    const [fullName, setFullName] = useState();
-    const [email, setEmail] = useState();
-    const [phone, setPhone] = useState();
-    const [address, setAddress] = useState();
-    const [role, setRole] = useState();
-    const [gender, setGender] = useState();
+    const [fullName, setFullName] = useState(data ? user.name : '');
+    const [email, setEmail] = useState(data ? user.email : '');
+    const [phone, setPhone] = useState(data ? user.phone : '');
+    const [address, setAddress] = useState(data ? user.address : '');
+    const [role, setRole] = useState(data ? user.role : '');
+    const [gender, setGender] = useState(data ? user.gender : '');
     const [loading, setLoading] = useState(false);
     const [keyboardIsShow, setKeyboardIsShow] = useState(false);
 
@@ -52,7 +52,7 @@ export default function Popup({ visible, onClose, data }) {
         try {
             const response = await updateStatus(data.id, '3');
             setUser(response);
-            Alert.alert(t('common:success'));
+            Alert.alert(t('common:notification'), t('common:success'));
         } catch (error) {
             Alert.alert(t('common:errLogin'), t('common:transmissionError'));
         } finally {
@@ -63,7 +63,7 @@ export default function Popup({ visible, onClose, data }) {
         setLoading(true);
         try {
             const response = await updateStatus(data.id, '1');
-            Alert.alert(t('common:success'));
+            Alert.alert(t('common:notification'), t('common:success'));
         } catch (error) {
             console.log(error);
             Alert.alert(t('common:errLogin'), t('common:transmissionError'));
@@ -75,7 +75,7 @@ export default function Popup({ visible, onClose, data }) {
         setLoading(true);
         try {
             const response = await deleteUser(data.id);
-            Alert.alert(t('common:success'));
+            Alert.alert(t('common:notification'), t('common:success'));
         } catch (error) {
             Alert.alert(t('common:errLogin'), t('common:transmissionError'));
         } finally {
@@ -87,7 +87,7 @@ export default function Popup({ visible, onClose, data }) {
         setLoading(true);
         try {
             await updateUser(data.id, fullName, role, address, gender, phone);
-            Alert.alert(t('common:success'));
+            Alert.alert(t('common:notification'), t('common:success'));
         } catch (error) {
             Alert.alert(t('common:errLogin'), t('common:transmissionError'));
         } finally {
@@ -97,22 +97,22 @@ export default function Popup({ visible, onClose, data }) {
     return (
         <Modal animationType="slide" transparent={true} visible={visible} onRequestClose={onClose}>
             <View style={newStyle}>
-                <Loading loading={loading} />
-                <View style={styles.top}>
-                    <View style={styles.header}>
-                        <View style={styles.header_item}></View>
-                        <View style={styles.header_item}>
-                            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{t('common:information')}</Text>
-                        </View>
-                        <TouchableOpacity
-                            style={{ ...styles.header_item, alignItems: 'flex-end', marginRight: 20 }}
-                            onPress={onClose}
-                        >
-                            <AntDesign name="close" size={24} color="black" />
-                        </TouchableOpacity>
+                <Loading loading={loading} isFullScreen />
+                <View style={styles.header}>
+                    <View style={styles.header_item}></View>
+                    <View style={styles.header_item}>
+                        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{t('common:information')}</Text>
                     </View>
-                    <View style={styles.content}>
-                        <View style={styles.avartar}>
+                    <TouchableOpacity
+                        style={{ ...styles.header_item, alignItems: 'flex-end', marginRight: 20 }}
+                        onPress={onClose}
+                    >
+                        <AntDesign name="close" size={24} color="black" />
+                    </TouchableOpacity>
+                </View>
+                <ScrollView style={{ width: '100%' }}>
+                    <View style={styles.center}>
+                        <View style={styles.input_item}>
                             <Image
                                 source={
                                     data.image == null
@@ -121,41 +121,34 @@ export default function Popup({ visible, onClose, data }) {
                                 }
                                 style={styles.img}
                             />
-                            <Text style={styles.text}>{data.name}</Text>
                         </View>
-                        <View style={styles.information}>
-                            <View style={styles.input_item}>
-                                <Text style={styles.title}>{t('common:fullName')}</Text>
-                                <Input
-                                    value={fullName}
-                                    onChangeText={(name) => setFullName(name)}
-                                    customStylesContainer={styles.input}
-                                    holder={data.name}
-                                />
-                            </View>
-                            <View style={styles.input_item}>
-                                <Text style={styles.title}>Email</Text>
-                                <Input
-                                    value={email}
-                                    onChangeText={(email) => setEmail(email)}
-                                    customStylesContainer={styles.input}
-                                    holder={data.email}
-                                />
-                            </View>
-                            <View style={styles.input_item}>
-                                <Text style={styles.title}>{t('common:address')}</Text>
-                                <Input
-                                    value={address}
-                                    onChangeText={(address) => setAddress(address)}
-                                    customStylesContainer={styles.input}
-                                    holder={data.phone}
-                                />
-                            </View>
+                        <View style={styles.input_item}>
+                            <Text style={styles.title}>{t('common:fullName')}</Text>
+                            <Input
+                                value={fullName}
+                                onChangeText={(name) => setFullName(name)}
+                                customStylesContainer={styles.input}
+                                holder={data.name}
+                            />
                         </View>
-                    </View>
-                </View>
-                <View style={styles.center}>
-                    <View style={styles.center_item}>
+                        <View style={styles.input_item}>
+                            <Text style={styles.title}>Email</Text>
+                            <Input
+                                value={email}
+                                onChangeText={(email) => setEmail(email)}
+                                customStylesContainer={styles.input}
+                                holder={data.email}
+                            />
+                        </View>
+                        <View style={styles.input_item}>
+                            <Text style={styles.title}>{t('common:address')}</Text>
+                            <Input
+                                value={address}
+                                onChangeText={(address) => setAddress(address)}
+                                customStylesContainer={styles.input}
+                                holder={data.phone}
+                            />
+                        </View>
                         <View style={styles.input_item}>
                             <Text style={styles.title}>{t('common:phone')}</Text>
                             <Input
@@ -165,7 +158,6 @@ export default function Popup({ visible, onClose, data }) {
                                 holder={data.phone}
                             />
                         </View>
-
                         <View style={styles.input_item}>
                             {company != null ? (
                                 <>
@@ -178,8 +170,6 @@ export default function Popup({ visible, onClose, data }) {
                                 </View>
                             )}
                         </View>
-                    </View>
-                    <View style={styles.center_item}>
                         <View style={styles.input_item}>
                             <Text style={styles.title}>{t('common:gender')}</Text>
                             <SelectDropdown
@@ -219,37 +209,37 @@ export default function Popup({ visible, onClose, data }) {
                             />
                         </View>
                     </View>
-                </View>
-                <View style={styles.bottom}>
-                    <Button
-                        onPress={handlerSend}
-                        customStylesText={styles.text}
-                        customStylesBtn={styles.btn}
-                        text={t('common:saveChanges')}
-                    />
-                    {user.status === 1 && (
+                    <View style={styles.bottom}>
                         <Button
-                            onPress={handleLockup}
+                            onPress={handlerSend}
                             customStylesText={styles.text}
                             customStylesBtn={styles.btn}
-                            text={t('common:lock')}
+                            text={t('common:saveChanges')}
                         />
-                    )}
-                    {user.status === 2 && (
+                        {user.status === 1 && (
+                            <Button
+                                onPress={handleLockup}
+                                customStylesText={styles.text}
+                                customStylesBtn={styles.btn}
+                                text={t('common:lock')}
+                            />
+                        )}
+                        {user.status === 2 && (
+                            <Button
+                                onPress={handleUnlock}
+                                customStylesText={styles.text}
+                                customStylesBtn={styles.btn}
+                                text={t('common:unLock')}
+                            />
+                        )}
                         <Button
-                            onPress={handleUnlock}
                             customStylesText={styles.text}
-                            customStylesBtn={styles.btn}
-                            text={t('common:unLock')}
+                            onPress={user.status === 2 ? () => Alert.alert('', t('common:deleteAcc')) : handleDelete}
+                            customStylesBtn={user.status === 2 ? { ...styles.btn, backgroundColor: 'red' } : styles.btn}
+                            text={t('common:delete')}
                         />
-                    )}
-                    <Button
-                        customStylesText={styles.text}
-                        onPress={user.status === 2 ? () => Alert.alert('', t('common:deleteAcc')) : handleDelete}
-                        customStylesBtn={user.status === 2 ? { ...styles.btn, backgroundColor: 'red' } : styles.btn}
-                        text={t('common:delete')}
-                    />
-                </View>
+                    </View>
+                </ScrollView>
             </View>
         </Modal>
     );
@@ -259,7 +249,7 @@ const styles = StyleSheet.create({
     container: {
         position: 'absolute',
         bottom: 0,
-        height: '60%',
+        height: '70%',
         width: '100%',
         alignItems: 'center',
         flexDirection: 'column',
@@ -271,9 +261,7 @@ const styles = StyleSheet.create({
         borderLeftWidth: 1,
         borderRightWidth: 1,
     },
-    top: {
-        flex: 2,
-    },
+
     header: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -290,61 +278,45 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    content: {
+    center: {
         flex: 1,
-        width: '100%',
-        flexDirection: 'row',
-    },
-    avartar: {
-        flex: 1,
-        alignItems: 'center',
         justifyContent: 'center',
-        // marginHorizontal: 10,
+        width: '100%',
     },
     img: {
-        resizeMode: 'stretch',
         width: 90,
         height: 90,
-        borderRadius: 90,
         borderWidth: 1,
+        borderRadius: 90,
         borderColor: 'gray',
+        resizeMode: 'stretch',
+        marginVertical: 10,
     },
     text: {
         fontSize: fontSizeDefault,
         textAlign: 'center',
     },
-    information: {
-        flex: 1,
-        marginTop: 10,
-    },
     input_item: {
         flex: 1,
-        marginBottom: 15,
-        marginRight: 10,
-        alignItems: 'flex-start',
+        width: '100%',
+        alignItems: 'center',
         justifyContent: 'center',
     },
     title: {
         fontSize: fontSizeDefault,
         fontWeight: 'bold',
-    },
-    input: {
-        borderRadius: 5,
-        borderColor: 'gray',
-        borderWidth: 1,
-        elevation: 1,
-        height: 30,
-        marginRight: 10,
-    },
-    center: {
-        flex: 1,
-        alignItems: 'flex-start',
-        justifyContent: 'center',
+        textAlign: 'left',
+        marginLeft: 10,
         width: '100%',
     },
-    center_item: {
-        flex: 1,
-        flexDirection: 'row',
+    input: {
+        width: '95%',
+        height: '45%',
+        paddingLeft: 10,
+        borderColor: 'gray',
+        borderRadius: 5,
+        borderWidth: 1,
+        elevation: 1,
     },
     bottom: {
         flex: 0.4,

@@ -4,6 +4,7 @@ export default {
     password: 'Пароль',
     notification: 'Уведомления',
     logout: 'Выйти',
+    application: 'Приложение',
 
     information: 'Информация',
     name: 'Имя',
@@ -13,6 +14,13 @@ export default {
     male: 'Мужской',
     female: 'Женский',
     save: 'Сохранить',
+    alert_no: 'Нет',
+    alert_yes: 'Согласен',
+    alert_lan: 'Вы уверены, что хотите изменить язык?',
+    searchProduct: 'Поиск по имени продукта',
+    searchBill: 'Поиск по идентификатору счета',
+    searchCompany: 'Поиск по названию компании',
+    searchUser: 'Поиск по имени пользователя',
 
     changePassword: 'Изменить пароль',
     oldPass: 'Старый пароль',

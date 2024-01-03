@@ -1,50 +1,51 @@
 import React, { useState, useEffect } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-// import SwitchCustom from '../../components/Switch';
+import SwitchCustom from '../../components/Switch';
 import Header from '../../components/SettingItem/header';
 import { white } from '../../constant/color';
 import { fontSizeMenuTitle } from '../../constant/fontSize';
 import BackgroundImage from '../../layouts/DefaultLayout/BackgroundImage';
 import { useTranslation } from 'react-i18next';
+import * as Notifications from 'expo-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Notification() {
     const { t } = useTranslation();
-    const [notificationEnabled, setNotificationEnabled] = useState(false);
+    const [isEnabled, setIsEnabled] = useState(true);
 
+    const toggleSwitch = async () => {
+        // Lưu trạng thái thông báo vào AsyncStorage
+        await AsyncStorage.setItem('notificationStatus', (!isEnabled).toString());
+        // Bật/tắt thông báo
+        setIsEnabled(!isEnabled);
+        // Hiển thị thông báo xác nhận cho người dùng (có thể thay đổi tùy ý)
+        const message = isEnabled ? t('common:notifyOff') : t('common:notifyOn');
+        alert(message);
+    };
+
+    // Gọi khi component được hiển thị
     useEffect(() => {
-        // Load notification status from AsyncStorage when the component mounts
         loadNotificationStatus();
+        // registerForPushNotificationsAsync();
     }, []);
 
-    useEffect(() => {
-        // Save notification status to AsyncStorage whenever notificationEnabled changes
-        saveNotificationStatus(notificationEnabled);
-    }, [notificationEnabled]);
-
     const loadNotificationStatus = async () => {
-        try {
-            const value = await AsyncStorage.getItem('notificationStatus');
-            if (value !== null) {
-                setNotificationEnabled(value === 'true');
-            }
-        } catch (error) {
-            console.error('Error loading notification status:', error);
-        }
+        const status = await AsyncStorage.getItem('notificationStatus');
+        setIsEnabled(status === 'true');
     };
 
-    const saveNotificationStatus = async (value) => {
-        try {
-            // Save notification status to AsyncStorage
-            await AsyncStorage.setItem('notificationStatus', value.toString());
-        } catch (error) {
-            console.error('Error saving notification status:', error);
-        }
-    };
-
-    const handleSwitchChange = (value) => {
-        setNotificationEnabled(value);
-    };
+    // const registerForPushNotificationsAsync = async () => {
+    //     const { status } = await Notifications.requestPermissionsAsync();
+    //     if (status !== 'granted') {
+    //         alert(t('common:error'));
+    //         return;
+    //     }
+    //     const tokenData = await Notifications.getExpoPushTokenAsync({
+    //         projectId: '6543f9e9-7465-4329-9d6a-396c9e14511f',
+    //     });
+    //     const expoPushToken = tokenData.data;
+    //     console.log('Expo Push Token:', expoPushToken);
+    // };
 
     return (
         <BackgroundImage>
@@ -63,9 +64,11 @@ export default function Notification() {
                             }}
                         >
                             <Text style={{ fontSize: 20 }}>{t('common:notification')}</Text>
-                            {/* <SwitchCustom onValueChange={handleSwitchChange} value={notificationEnabled} /> */}
+                            <SwitchCustom isEnabled={isEnabled} toggleSwitch={toggleSwitch} />
                         </View>
-                        <Text style={{ color: 'gray', paddingHorizontal: 10 }}>{t('common:note')}</Text>
+                        <Text style={{ color: 'gray', paddingHorizontal: 10, marginBottom: 5 }}>
+                            {t('common:note')}
+                        </Text>
                     </View>
                 </View>
             </ScrollView>

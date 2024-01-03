@@ -5,6 +5,7 @@ export default {
     password: 'Mot de passe',
     notification: 'Notification',
     logout: 'Se déconnecter',
+    application: 'Application ',
 
     information: 'Information',
     changeAvt: "Changer l'avatar",
@@ -16,6 +17,13 @@ export default {
     male: 'Homme',
     female: 'Femme',
     save: 'Enregistrer',
+    alert_no: 'Non',
+    alert_yes: 'Daccord',
+    alert_lan: 'Êtes-vous sûr de vouloir changer de langue?',
+    searchProduct: 'Recherche par nom de produit',
+    searchBill: 'Recherche par numéro de facture',
+    searchCompany: 'Recherche par nom dentreprise',
+    searchUser: 'Recherche par nom dutilisateur',
 
     changePassword: 'Changer le mot de passe',
     oldPass: 'Ancien mot de passe',

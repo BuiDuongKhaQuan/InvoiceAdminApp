@@ -4,6 +4,7 @@ export default {
     password: 'パスワード',
     notification: '通知',
     logout: 'ログアウト',
+    application: 'アプリケーション ',
 
     information: '情報',
     name: '名前',
@@ -13,6 +14,13 @@ export default {
     male: '男性',
     female: '女性',
     save: '保存',
+    alert_no: 'いいえ',
+    alert_yes: '同意します',
+    alert_lan: '言語を変更してもよろしいですか？',
+    searchProduct: '製品名で検索',
+    searchBill: '請求書IDで検索',
+    searchCompany: '会社名で検索',
+    searchUser: 'ユーザー名で検索',
 
     changePassword: 'パスワード変更',
     oldPass: '旧パスワード',

@@ -4,6 +4,7 @@ export default {
     password: 'Password',
     notification: 'Notifiche',
     logout: 'Esci',
+    application: 'Applicazione',
 
     information: 'Informazioni',
     name: 'Nome',
@@ -13,6 +14,13 @@ export default {
     male: 'Maschio',
     female: 'Femmina',
     save: 'Salva',
+    alert_no: 'No',
+    alert_yes: 'Concordo',
+    alert_lan: 'Sei sicuro di voler cambiare lingua?',
+    searchProduct: 'Ricerca per nome del prodotto',
+    searchBill: 'Ricerca per ID fattura',
+    searchCompany: 'Ricerca per nome dellazienda',
+    searchUser: 'Ricerca per nome utente',
 
     changePassword: 'Cambia Password',
     oldPass: 'Vecchia Password',
