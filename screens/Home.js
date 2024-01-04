@@ -125,7 +125,7 @@ export default function Home() {
                         <Text style={styles.text}>{t('common:overview')}</Text>
                     </View>
                 </View>
-                <View style={{ justifyContent: 'center', marginHorizontal: -20 }}>
+                <View style={{ justifyContent: 'center', marginHorizontal: -20, alignItems: 'center' }}>
                     <LineChart
                         data={chartData}
                         width={Dimensions.get('window').width - 16}
