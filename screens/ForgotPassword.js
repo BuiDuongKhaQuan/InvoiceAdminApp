@@ -1,9 +1,8 @@
-import { StyleSheet, Text, View, Image, Keyboard, ImageBackground, ScrollView, Alert } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, Image, ScrollView, Alert } from 'react-native';
+import React, { useState } from 'react';
 import Input from '../components/Input';
 import Button from '../components/Button';
-import { isValidateEmail, isValidateCode, isValidateOTP } from '../utilies/validate';
-import { fontSizeDefault } from '../constant/fontSize';
+import { isValidateEmail, isValidateOTP } from '../utilies/validate';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import BackgroundImage from '../layouts/DefaultLayout/BackgroundImage';
 import { useTranslation } from 'react-i18next';
