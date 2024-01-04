@@ -5,6 +5,7 @@ export default {
     notification: '通知',
     logout: 'ログアウト',
     application: 'アプリケーション ',
+    stock: '在庫',
 
     information: '情報',
     name: '名前',

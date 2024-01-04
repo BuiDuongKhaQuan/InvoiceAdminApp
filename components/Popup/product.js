@@ -35,7 +35,7 @@ export default function Popup({ visible, onClose, data }) {
             const response = await deleteProductById(data.id);
             Alert.alert(t('common:notification'), t('common:success'));
         } catch (error) {
-            console.error(' error:', error.response);
+            console.error('error:', error.response);
         } finally {
             setLoading(false);
         }
@@ -91,7 +91,7 @@ export default function Popup({ visible, onClose, data }) {
                             />
                         </View>
                         <View style={styles.input_item}>
-                            <Text style={styles.title}>{t('common:price')}</Text>
+                            <Text style={styles.title}>{t('common:stock')}</Text>
                             <Input
                                 value={String(stock)}
                                 onChangeText={(stock) => setStock(stock)}

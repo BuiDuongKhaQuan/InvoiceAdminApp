@@ -6,6 +6,7 @@ export default {
     notification: '通知',
     logout: '注销',
     application: '应用程序 ',
+    stock: '库存',
 
     information: '信息',
     changeAvt: '更改头像',

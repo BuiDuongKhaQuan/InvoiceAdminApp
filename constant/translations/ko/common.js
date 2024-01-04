@@ -5,6 +5,7 @@ export default {
     notification: '알림',
     logout: '로그아웃',
     application: '어플리케이션',
+    stock: '재고',
 
     information: '정보',
     name: '이름',

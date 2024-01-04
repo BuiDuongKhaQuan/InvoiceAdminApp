@@ -6,6 +6,7 @@ export default {
     notification: 'Notification',
     logout: 'Se déconnecter',
     application: 'Application ',
+    stock: 'Stock',
 
     information: 'Information',
     changeAvt: "Changer l'avatar",
