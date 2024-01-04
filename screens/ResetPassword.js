@@ -109,7 +109,7 @@ export default function ResetPassword() {
                     value={repass}
                     validate={errorRepass}
                     validateText={t('common:errRenewPass')}
-                    holder={t('common:newPass')}
+                    holder={t('common:renewPass')}
                     iconLeft={<Ionicons name="lock-closed-outline" size={24} color="black" />}
                 />
 

@@ -5,6 +5,7 @@ export default {
     notification: 'Уведомления',
     logout: 'Выйти',
     application: 'Приложение',
+    stock: 'Склад',
 
     information: 'Информация',
     name: 'Имя',

@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const instance = axios.create({
     // baseURL: 'http://bill-rest.ap-southeast-2.elasticbeanstalk.com/api',
-    baseURL: 'http://192.168.189.94:8080/api',
+    baseURL: 'http://172.16.0.10:8080/api',
 });
 
 // Auth

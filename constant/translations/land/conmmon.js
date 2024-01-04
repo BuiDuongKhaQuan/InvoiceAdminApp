@@ -5,6 +5,7 @@ export default {
     notification: 'การแจ้งเตือน',
     logout: 'ออกจากระบบ',
     application: 'แอปพลิเคชัน',
+    stock: 'สต็อก',
 
     information: 'ข้อมูล',
     name: 'ชื่อ',

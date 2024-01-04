@@ -31,7 +31,7 @@ export default {
     send: 'Send',
     notify: 'Notification on and off',
     note: 'Turn on to get the earliest notification',
-
+    stock: 'Stock',
     login: 'Login',
     otpCode: 'Enter otp code',
     haveAccount: 'Do you have an account? ',

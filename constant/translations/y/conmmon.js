@@ -5,6 +5,7 @@ export default {
     notification: 'Notifiche',
     logout: 'Esci',
     application: 'Applicazione',
+    stock: 'Magazzino',
 
     information: 'Informazioni',
     name: 'Nome',

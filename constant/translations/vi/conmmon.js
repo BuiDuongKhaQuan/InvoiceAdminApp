@@ -5,6 +5,7 @@ export default {
     notification: 'Thông báo',
     logout: 'Đăng xuất',
     application: 'Ứng dụng',
+    stock: 'Số lượng',
 
     information: 'Thông tin',
     name: 'Tên',
@@ -25,7 +26,7 @@ export default {
     changePassword: 'Thay đổi mật khẩu',
     oldPass: 'Mật khẩu cũ',
     newPass: 'Mật khẩu mới',
-    renewPass: 'Nhập lịa mật khẩu',
+    renewPass: 'Nhập lại mật khẩu',
     confirm: 'Xác nhận ',
     forgotPass: 'Quên mật khẩu',
     passwordIncorrect: 'Mật khẩu không chính xác',

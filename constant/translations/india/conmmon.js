@@ -6,6 +6,7 @@ export default {
     notification: 'सूचना',
     logout: 'लॉग आउट',
     application: 'अनुप्रयोग ',
+    stock: 'स्टॉक',
 
     information: 'जानकारी',
     changeAvt: 'अवतार बदलें',
