@@ -123,7 +123,6 @@ export default function Company() {
             <Input
                 holder={t('common:searchUser')}
                 iconLeft={<Feather name="search" size={21} color="black" />}
-                iconRight={<Ionicons name="ios-qr-code-outline" size={21} color="black" />}
                 customStylesContainer={{
                     borderRadius: 0,
                     height: 50,
